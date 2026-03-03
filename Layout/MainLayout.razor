@@ -11,8 +11,7 @@
         <div class="top-row px-4">
             @if (_installAvailable)
             {
-                <button class="btn btn-sm btn-outline-light"
-                        @onclick="InstallApp">
+                <button class="btn btn-sm btn-outline-light" @onclick="InstallApp">
                     Install App
                 </button>
             }
@@ -55,10 +54,10 @@
         _installModule = await JS.InvokeAsync<IJSObjectReference>("import", "./install.js");
         await _installModule.InvokeVoidAsync("initInstallPrompt");
 
-        // Register callbacks (no eval)
+        // ✅ Register install callbacks (NO eval)
         await _installModule.InvokeVoidAsync("registerInstallCallbacks", _selfRef);
 
-        // If install prompt was already captured (rare), show button immediately
+        // If install prompt was already captured, show button immediately
         var canInstallNow = await _installModule.InvokeAsync<bool>("canPromptInstall");
         if (canInstallNow)
         {
@@ -68,6 +67,8 @@
 
         // ---- Update module ----
         _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
+
+        // ✅ Register update callbacks (already correct pattern)
         await _updateModule.InvokeVoidAsync("registerUpdateCallbacks", _selfRef);
 
         var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
@@ -120,10 +121,8 @@
 
     public void Dispose()
     {
-        // Unhook DOM listeners in JS modules
         _ = _installModule?.InvokeVoidAsync("unregisterInstallCallbacks");
         _ = _updateModule?.InvokeVoidAsync("unregisterUpdateCallbacks");
-
         _selfRef?.Dispose();
     }
 }
