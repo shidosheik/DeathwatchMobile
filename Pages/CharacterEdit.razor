@@ -374,13 +374,13 @@ else
     {
         if (_character is null) return;
         await Store.UpsertAsync(_character);
-        Nav.NavigateTo("/characters");
+        Nav.NavigateTo("/DeathwatchMobile/characters");
     }
 
     private async Task Delete()
     {
         await Store.DeleteAsync(Id);
-        Nav.NavigateTo("/characters");
+        Nav.NavigateTo("/DeathwatchMobile/characters");
     }
 
     private RenderFragment CharRow(string label, DeathwatchMobile.Models.StatBlock stat) => __builder =>
