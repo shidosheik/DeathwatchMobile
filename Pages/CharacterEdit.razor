@@ -123,6 +123,55 @@ else
         else
         {
             <div class="table-responsive">
+                <div class="row g-2 align-items-end mb-2">
+            <div class="col-12 col-md-4">
+                <label class="form-label">Search</label>
+                <input class="form-control form-control-sm" placeholder="e.g. Awareness, Dodge..."
+                    @bind="_skillSearch" @bind:event="oninput" />
+            </div>
+
+            <div class="col-6 col-md-3">
+                <label class="form-label">Governing</label>
+                <select class="form-select form-select-sm" @bind="_skillGoverning">
+                    <option value="">All</option>
+                    <option value="WS">WS</option>
+                    <option value="BS">BS</option>
+                    <option value="S">S</option>
+                    <option value="T">T</option>
+                    <option value="Ag">Ag</option>
+                    <option value="Int">Int</option>
+                    <option value="Per">Per</option>
+                    <option value="WP">WP</option>
+                    <option value="Fel">Fel</option>
+                </select>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <label class="form-label">Sort</label>
+                <select class="form-select form-select-sm" @bind="_skillSort">
+                    <option value="name">Name</option>
+                    <option value="target">Target</option>
+                    <option value="governing">Governing</option>
+                    <option value="training">Training</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-2">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="trainedOnly" @bind="_trainedOnly" />
+                    <label class="form-check-label" for="trainedOnly">
+                        Trained only
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-2">
+                <button class="btn btn-sm btn-outline-secondary w-100 mt-md-4"
+                        @onclick="ResetSkillFilters">
+                    Reset
+                </button>
+            </div>
+        </div>
                 <table class="table table-sm align-middle">
                     <thead>
                         <tr>
@@ -134,7 +183,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var s in _character.Skills.OrderBy(x => x.Name))
+                        @foreach (var s in FilteredSkills())
                         {
                             <tr>
                                 <td>@s.Name</td>
@@ -302,5 +351,55 @@ else
             Governing = "Per",
             Training = DeathwatchMobile.Models.SkillTraining.Untrained
         });
+    }
+
+    private string _skillSearch = "";
+    private string _skillGoverning = ""; // "" = all
+    private string _skillSort = "name";
+    private bool _trainedOnly = false;
+
+    private IEnumerable<DeathwatchMobile.Models.Skill> FilteredSkills()
+    {
+        if (_character?.Skills is null) return Enumerable.Empty<DeathwatchMobile.Models.Skill>();
+
+        IEnumerable<DeathwatchMobile.Models.Skill> q = _character.Skills;
+
+        // Search
+        if (!string.IsNullOrWhiteSpace(_skillSearch))
+        {
+            var s = _skillSearch.Trim();
+            q = q.Where(x => x.Name.Contains(s, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Governing filter
+        if (!string.IsNullOrWhiteSpace(_skillGoverning))
+        {
+            q = q.Where(x => x.Governing == _skillGoverning);
+        }
+
+        // Trained-only
+        if (_trainedOnly)
+        {
+            q = q.Where(x => x.Training != DeathwatchMobile.Models.SkillTraining.Untrained);
+        }
+
+        // Sort
+        q = _skillSort switch
+        {
+            "target" => q.OrderByDescending(x => _character!.SkillTarget(x)).ThenBy(x => x.Name),
+            "governing" => q.OrderBy(x => x.Governing).ThenBy(x => x.Name),
+            "training" => q.OrderByDescending(x => x.Training).ThenBy(x => x.Name),
+            _ => q.OrderBy(x => x.Name)
+        };
+
+        return q;
+    }
+
+    private void ResetSkillFilters()
+    {
+        _skillSearch = "";
+        _skillGoverning = "";
+        _skillSort = "name";
+        _trainedOnly = false;
     }
 }
