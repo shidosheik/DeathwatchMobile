@@ -26,7 +26,7 @@ else
                     <strong>@(string.IsNullOrWhiteSpace(c.Name) ? "(Unnamed)" : c.Name)</strong>
                     <div class="text-muted small">@c.Chapter • @c.Specialty • Rank @c.Rank</div>
                 </div>
-                <a class="btn btn-sm btn-outline-secondary" href="@("/DeathwatchMobile/Characters/{c.Id}")">Edit</a>
+                <a class="btn btn-sm btn-outline-secondary" href="/DeathwatchMobile/Characters/@c.Id">Edit</a>
             </li>
         }
     </ul>
