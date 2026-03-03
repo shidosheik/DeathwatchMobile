@@ -40,3 +40,30 @@ export async function showInstallPrompt() {
 export function isAppInstalled() {
   return isInstalled();
 }
+
+/* ----------------------------
+   Blazor callback bridge
+-----------------------------*/
+
+let dotNetRef = null;
+
+function onInstallAvailable() {
+  dotNetRef?.invokeMethodAsync("NotifyInstallAvailable");
+}
+
+function onInstalled() {
+  dotNetRef?.invokeMethodAsync("NotifyInstalled");
+}
+
+export function registerInstallCallbacks(ref) {
+  dotNetRef = ref;
+
+  window.addEventListener("pwa-install-available", onInstallAvailable);
+  window.addEventListener("pwa-installed", onInstalled);
+}
+
+export function unregisterInstallCallbacks() {
+  window.removeEventListener("pwa-install-available", onInstallAvailable);
+  window.removeEventListener("pwa-installed", onInstalled);
+  dotNetRef = null;
+}
