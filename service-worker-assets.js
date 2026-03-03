@@ -1,13 +1,13 @@
 self.assetsManifest = {
-  "version": "9C+1+2Qa",
+  "version": "L0XHPFNl",
   "assets": [
     {
       "hash": "sha256-25nB2U2jjgoP7agAfLBZtC9Qr+OWUpw9tEudBNDv9EY=",
       "url": "DeathwatchMobile.styles.css"
     },
     {
-      "hash": "sha256-BD+/+1llyEDrXH8tAzV/abB2DwkDWfnIkFnvUYNqxL4=",
-      "url": "_framework/DeathwatchMobile.olfgeo6yoe.wasm"
+      "hash": "sha256-C2ipjs1J5appyPlDGn2pYEJMN7qumz+Di5UWIEfFIik=",
+      "url": "_framework/DeathwatchMobile.bsdpuy3qt0.wasm"
     },
     {
       "hash": "sha256-JHAfQNyqnfxJcWfmXXlqfkws6T9vhgr1zsp9PPe30jU=",
@@ -158,7 +158,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.vbr1gezq3a.wasm"
     },
     {
-      "hash": "sha256-EluPIkWCkRsNiBeEkOw6RQOhq7SOcHxkClaWddd4nPc=",
+      "hash": "sha256-PgZxQjkD4WEPL9WopsJv69c/OCA9xUYrjlMITTMJKRM=",
       "url": "_framework/blazor.boot.json"
     },
     {
