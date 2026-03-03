@@ -45,7 +45,7 @@ else
         var c = new Character();
         c.Skills = DefaultSkills.Create();
         await Store.UpsertAsync(c);
-        Nav.NavigateTo($"/character/{c.Id}");
+        Nav.NavigateTo($"/DeathwatchMobile/Characters/{c.Id}");
     }
 
     
