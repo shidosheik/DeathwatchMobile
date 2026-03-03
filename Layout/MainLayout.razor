@@ -9,12 +9,14 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            @if (_installAvailable)
+        <div class="top-row px-4 d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-light" @onclick="InstallApp" disabled="@_installInProgress">
+                @(_installInProgress ? "Installing..." : "Install App")
+            </button>
+
+            @if (!string.IsNullOrWhiteSpace(_installStatus))
             {
-                <button class="btn btn-sm btn-outline-light" @onclick="InstallApp">
-                    Install App
-                </button>
+                <span class="small text-muted">@_installStatus</span>
             }
         </div>
 
@@ -37,13 +39,15 @@
 </div>
 
 @code {
-    private bool _installAvailable;
     private IJSObjectReference? _installModule;
-
-    private bool _updateAvailable;
     private IJSObjectReference? _updateModule;
 
     private DotNetObjectReference<MainLayout>? _selfRef;
+
+    private bool _updateAvailable;
+
+    private bool _installInProgress;
+    private string? _installStatus;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,23 +55,18 @@
 
         _selfRef = DotNetObjectReference.Create(this);
 
-        // IMPORTANT: Use BaseUri so this works from ANY route (GitHub Pages + deep links)
+        // Use BaseUri so imports work on any route + GitHub Pages base path
         var installJsUrl = new Uri(new Uri(Nav.BaseUri), "install.js").ToString();
         var updateJsUrl  = new Uri(new Uri(Nav.BaseUri), "update.js").ToString();
 
-        // ---- Install module ----
+        // Install module
         _installModule = await JS.InvokeAsync<IJSObjectReference>("import", installJsUrl);
+
+        // Hook the browser event listeners (captures beforeinstallprompt when/if it happens)
         await _installModule.InvokeVoidAsync("initInstallPrompt");
         await _installModule.InvokeVoidAsync("registerInstallCallbacks", _selfRef);
 
-        // If the prompt is already captured, show immediately
-        if (await _installModule.InvokeAsync<bool>("canPromptInstall"))
-        {
-            _installAvailable = true;
-            StateHasChanged();
-        }
-
-        // ---- Update module ----
+        // Update module (unchanged)
         _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", updateJsUrl);
         await _updateModule.InvokeVoidAsync("registerUpdateCallbacks", _selfRef);
 
@@ -78,31 +77,58 @@
         }
     }
 
+    private async Task InstallApp()
+    {
+        if (_installModule is null) return;
+
+        _installInProgress = true;
+        _installStatus = null;
+        StateHasChanged();
+
+        try
+        {
+            // If Chrome has the install prompt available, this will show it
+            // If not available, this returns false
+            var accepted = await _installModule.InvokeAsync<bool>("showInstallPrompt");
+
+            if (accepted)
+            {
+                _installStatus = "Installed (or accepted). If you don’t see it yet, give it a second.";
+            }
+            else
+            {
+                // Fallback: always “usable” — guide the user to manual install UX
+                _installStatus =
+                    "Install prompt not available yet. Try Chrome menu → “Install app” (or the install icon in the address bar). " +
+                    "If you just updated, hard-refresh / clear site data and reload.";
+            }
+        }
+        catch (JSException)
+        {
+            _installStatus =
+                "Install prompt failed. Try Chrome menu → “Install app” (or the address bar install icon).";
+        }
+        finally
+        {
+            _installInProgress = false;
+            StateHasChanged();
+        }
+    }
+
     [JSInvokable]
     public void NotifyInstallAvailable()
     {
-        _installAvailable = true;
+        // We keep this because it’s still useful for diagnostics,
+        // but we’re no longer hiding/showing the button based on it.
+        _installStatus = "Install is available.";
         _ = InvokeAsync(StateHasChanged);
     }
 
     [JSInvokable]
     public void NotifyInstalled()
     {
-        _installAvailable = false;
+        _installStatus = "App installed.";
         _ = InvokeAsync(StateHasChanged);
-    }
-
-    private async Task InstallApp()
-    {
-        if (_installModule is null) return;
-
-        var accepted = await _installModule.InvokeAsync<bool>("showInstallPrompt");
-        if (accepted)
-        {
-            _installAvailable = false;
-        }
-
-        StateHasChanged();
     }
 
     [JSInvokable]
