@@ -1,13 +1,13 @@
 self.assetsManifest = {
-  "version": "YWeMZjhx",
+  "version": "ltiEIVCG",
   "assets": [
     {
       "hash": "sha256-25nB2U2jjgoP7agAfLBZtC9Qr+OWUpw9tEudBNDv9EY=",
       "url": "DeathwatchMobile.styles.css"
     },
     {
-      "hash": "sha256-eauoKA9xSKYgdZMDspDcqQBvfGWpIfgIJC/V09zG4j0=",
-      "url": "_framework/DeathwatchMobile.psfqxqn40o.wasm"
+      "hash": "sha256-W/GvC4b0IJ6l8JBwcJFX28Q5ndTlbOZuKqZnuAGiTAg=",
+      "url": "_framework/DeathwatchMobile.1t9ovupi0z.wasm"
     },
     {
       "hash": "sha256-JHAfQNyqnfxJcWfmXXlqfkws6T9vhgr1zsp9PPe30jU=",
@@ -158,7 +158,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.vbr1gezq3a.wasm"
     },
     {
-      "hash": "sha256-YaBktSDr0NkZ+fth2lTdzX5HyDn7xrtaJQYUiFeTg/0=",
+      "hash": "sha256-JuW4muz605cAXV6za+l9u6sDx7kx5qo9xkY9Lq5eGOY=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -214,7 +214,7 @@ self.assetsManifest = {
       "url": "index.html"
     },
     {
-      "hash": "sha256-2maVCOXAYnWN77LnvACPkEEUwQZmaa1Db1n6i60fhA0=",
+      "hash": "sha256-O5y5f8Vgdw2bln5eVvRa0JCyj3W9egPfwku1EcxRYQg=",
       "url": "install.js"
     },
     {
@@ -400,6 +400,10 @@ self.assetsManifest = {
     {
       "hash": "sha256-paIeuWnSzjeLGITWkk4p3rcejUsZWCJGPeOK9UhWXtg=",
       "url": "sample-data/weather.json"
+    },
+    {
+      "hash": "sha256-ACADbNIoZJxfXgsFxNKS1ZhNAC6lgESpgjwyCQWcS7M=",
+      "url": "update.js"
     }
   ]
 };
