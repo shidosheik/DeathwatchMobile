@@ -1,0 +1,306 @@
+@page "/character/{Id}"
+@using DeathwatchMobile.Models
+@inject DeathwatchMobile.Services.CharacterStore Store
+@inject NavigationManager Nav
+
+<h3>Edit Character</h3>
+
+<div class="mb-3">
+    <a href="/characters">← Back to list</a>
+</div>
+
+@if (_character is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card p-3">
+        <div class="mb-2">
+            <label class="form-label">Name</label>
+            <input class="form-control" @bind="_character.Name" />
+        </div>
+
+        <div class="row">
+            <div class="col-6 mb-2">
+                <label class="form-label">Chapter</label>
+                <input class="form-control" @bind="_character.Chapter" />
+            </div>
+            <div class="col-6 mb-2">
+                <label class="form-label">Specialty</label>
+                <input class="form-control" @bind="_character.Specialty" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 mb-2">
+                <label class="form-label">Demeanor</label>
+                <input class="form-control" @bind="_character.Demeanor" />
+            </div>
+            <div class="col-3 mb-2">
+                <label class="form-label">Rank</label>
+                <input class="form-control" type="number" min="1" max="8" @bind="_character.Rank" />
+            </div>
+            <div class="col-3 mb-2">
+                <label class="form-label">Renown</label>
+                <input class="form-control" @bind="_character.Renown" />
+            </div>
+        </div>
+
+
+        <hr />
+        <h5>Characteristics</h5>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                <tr>
+                    <th>Stat</th>
+                    <th style="width: 110px;">Base</th>
+                    <th style="width: 110px;">Power Assist</th>
+                    <th style="width: 110px;">Advances</th>
+                    <th style="width: 110px;">Total</th>
+                    <th style="width: 110px;">Bonus</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @CharRow("WS", _character.WS)
+                    @CharRow("BS", _character.BS)
+                    @CharRow("S",  _character.S)
+                    @CharRow("T",  _character.T)
+                    @CharRow("Ag", _character.Ag)
+                    @CharRow("Int", _character.Int)
+                    @CharRow("Per", _character.Per)
+                    @CharRow("WP", _character.WP)
+                    @CharRow("Fel", _character.Fel)
+                </tbody>
+            </table>
+        </div>
+
+        <hr />
+        <h5>Derived</h5>
+
+        <div class="row">
+            <div class="col-6 col-md-3 mb-2">
+                <div class="card p-2">
+                    <div class="text-muted small">Strength Bonus</div>
+                    <div class="fs-4">@_character.S.Bonus</div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3 mb-2">
+                <div class="card p-2">
+                    <div class="text-muted small">Toughness Bonus</div>
+                    <div class="fs-4">@_character.T.Bonus</div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3 mb-2">
+                <div class="card p-2">
+                    <div class="text-muted small">Agility Bonus</div>
+                    <div class="fs-4">@_character.Ag.Bonus</div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3 mb-2">
+                <div class="card p-2">
+                    <div class="text-muted small">Willpower Bonus</div>
+                    <div class="fs-4">@_character.WP.Bonus</div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-2 text-muted">
+            SB: @_character.StrengthBonus &nbsp; • &nbsp; TB: @_character.ToughnessBonus
+        </div>
+
+        <hr />
+        <h5>Skills</h5>
+
+        @if (_character.Skills is null)
+        {
+            <p>No skills list.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+                            <th style="width:110px;">Governing</th>
+                            <th style="width:160px;">Training</th>
+                            <th style="width:110px;">Mod</th>
+                            <th style="width:110px;">Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in _character.Skills.OrderBy(x => x.Name))
+                        {
+                            <tr>
+                                <td>@s.Name</td>
+
+                                <td>
+                                    <select class="form-select form-select-sm" @bind="s.Governing">
+                                        <option value="WS">WS</option>
+                                        <option value="BS">BS</option>
+                                        <option value="S">S</option>
+                                        <option value="T">T</option>
+                                        <option value="Ag">Ag</option>
+                                        <option value="Int">Int</option>
+                                        <option value="Per">Per</option>
+                                        <option value="WP">WP</option>
+                                        <option value="Fel">Fel</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <select class="form-select form-select-sm" @bind="s.Training">
+                                        <option value="@DeathwatchMobile.Models.SkillTraining.Untrained">Untrained</option>
+                                        <option value="@DeathwatchMobile.Models.SkillTraining.Trained">Trained</option>
+                                        <option value="@DeathwatchMobile.Models.SkillTraining.Plus10">+10</option>
+                                        <option value="@DeathwatchMobile.Models.SkillTraining.Plus20">+20</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input class="form-control form-control-sm" type="number" @bind="s.MiscMod" />
+                                </td>
+
+                                <td>
+                                    @_character.SkillTarget(s)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-outline-primary btn-sm" @onclick="AddSkill">Add Skill</button>
+        }
+
+        <h6 class="mt-3">Movement</h6>
+        <div class="row">
+            <div class="col-3 mb-2">
+                <label class="form-label">Half</label>
+                <input class="form-control" type="number" min="0" @bind="_character.MoveHalf" />
+            </div>
+            <div class="col-3 mb-2">
+                <label class="form-label">Full</label>
+                <input class="form-control" type="number" min="0" @bind="_character.MoveFull" />
+            </div>
+            <div class="col-3 mb-2">
+                <label class="form-label">Charge</label>
+                <input class="form-control" type="number" min="0" @bind="_character.MoveCharge" />
+            </div>
+            <div class="col-3 mb-2">
+                <label class="form-label">Run</label>
+                <input class="form-control" type="number" min="0" @bind="_character.MoveRun" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 mb-2">
+                <label class="form-label">Wounds (Current / Max)</label>
+                <div class="d-flex gap-2">
+                    <input class="form-control" type="number" min="0" @bind="_character.WoundsCurrent" />
+                    <input class="form-control" type="number" min="0" @bind="_character.WoundsMax" />
+                </div>
+            </div>
+
+            <div class="col-6 mb-2">
+                <label class="form-label">Fate (Current / Max)</label>
+                <div class="d-flex gap-2">
+                    <input class="form-control" type="number" min="0" @bind="_character.FateCurrent" />
+                    <input class="form-control" type="number" min="0" @bind="_character.FateMax" />
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-success" @onclick="Save">Save</button>
+            <button class="btn btn-outline-danger" @onclick="Delete">Delete</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    private Character? _character;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _character = await Store.GetByIdAsync(Id) ?? new Character { Id = Id };
+    }
+
+    private async Task Save()
+    {
+        if (_character is null) return;
+        await Store.UpsertAsync(_character);
+        Nav.NavigateTo("/characters");
+    }
+
+    private async Task Delete()
+    {
+        await Store.DeleteAsync(Id);
+        Nav.NavigateTo("/characters");
+    }
+
+    private RenderFragment CharRow(string label, DeathwatchMobile.Models.StatBlock stat) => __builder =>
+    {
+        var seq = 0;
+        __builder.OpenElement(seq++, "tr");
+
+        __builder.OpenElement(seq++, "td");
+        __builder.AddContent(seq++, label);
+        __builder.CloseElement();
+
+        __builder.OpenElement(seq++, "td");
+        __builder.OpenElement(seq++, "input");
+        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
+        __builder.AddAttribute(seq++, "type", "number");
+        __builder.AddAttribute(seq++, "min", "0");
+        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.Base));
+        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(this, v => stat.Base = v, stat.Base));
+        __builder.CloseElement();
+        __builder.CloseElement();
+
+        __builder.OpenElement(seq++, "td");
+        __builder.OpenElement(seq++, "input");
+        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
+        __builder.AddAttribute(seq++, "type", "number");
+        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.PowerAssist));
+        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(
+            this, v => stat.PowerAssist = v, stat.PowerAssist));
+        __builder.CloseElement();
+        __builder.CloseElement();
+
+        __builder.OpenElement(seq++, "td");
+        __builder.OpenElement(seq++, "input");
+        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
+        __builder.AddAttribute(seq++, "type", "number");
+        __builder.AddAttribute(seq++, "min", "0");
+        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.Advances));
+        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(this, v => stat.Advances = v, stat.Advances));
+        __builder.CloseElement();
+        __builder.CloseElement();
+
+        __builder.OpenElement(seq++, "td");
+        __builder.AddContent(seq++, stat.Total);
+        __builder.CloseElement();
+        __builder.OpenElement(seq++, "td");
+        __builder.AddContent(seq++, stat.Bonus);
+        __builder.CloseElement();
+
+        __builder.CloseElement();
+    };
+
+    private void AddSkill()
+    {
+        _character?.Skills.Add(new DeathwatchMobile.Models.Skill
+        {
+            Name = "New Skill",
+            Governing = "Per",
+            Training = DeathwatchMobile.Models.SkillTraining.Untrained
+        });
+    }
+}
