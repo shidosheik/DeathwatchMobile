@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @implements IDisposable
 @inject IJSRuntime JS
+@inject NavigationManager Nav
 
 <div class="page">
     <div class="sidebar">
@@ -50,11 +51,15 @@
 
         _selfRef = DotNetObjectReference.Create(this);
 
+        // Build module URLs that work from ANY route (and GitHub Pages base paths)
+        var installJsUrl = new Uri(new Uri(Nav.BaseUri), "install.js").ToString();
+        var updateJsUrl  = new Uri(new Uri(Nav.BaseUri), "update.js").ToString();
+
         // ---- Install module ----
-        _installModule = await JS.InvokeAsync<IJSObjectReference>("import", "./install.js");
+        _installModule = await JS.InvokeAsync<IJSObjectReference>("import", installJsUrl);
         await _installModule.InvokeVoidAsync("initInstallPrompt");
 
-        // ✅ Register install callbacks (NO eval)
+        // Register install callbacks
         await _installModule.InvokeVoidAsync("registerInstallCallbacks", _selfRef);
 
         // If install prompt was already captured, show button immediately
@@ -66,9 +71,9 @@
         }
 
         // ---- Update module ----
-        _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
+        _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", updateJsUrl);
 
-        // ✅ Register update callbacks (already correct pattern)
+        // Register update callbacks
         await _updateModule.InvokeVoidAsync("registerUpdateCallbacks", _selfRef);
 
         var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
