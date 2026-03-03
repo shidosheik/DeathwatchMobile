@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -33,57 +35,87 @@
     </main>
 </div>
 
-@code{
-    @inject IJSRuntime JS
-
+@code {
     private bool _installAvailable;
     private IJSObjectReference? _installModule;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        _installModule = await JS.InvokeAsync<IJSObjectReference>(
-            "import", "./install.js");
-
-        _installAvailable = await _installModule.InvokeAsync<bool>("initInstallPrompt");
-
-        StateHasChanged();
-    }
-
-    private async Task InstallApp()
-    {
-        if (_installModule is not null)
-            await _installModule.InvokeVoidAsync("showInstallPrompt");
-    }
-
     private bool _updateAvailable;
     private IJSObjectReference? _updateModule;
+
     private DotNetObjectReference<MainLayout>? _selfRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
-        _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
-
-        // Set up a browser event listener that calls back into .NET
         _selfRef = DotNetObjectReference.Create(this);
+
+        // ---- Install module ----
+        _installModule = await JS.InvokeAsync<IJSObjectReference>("import", "./install.js");
+        await _installModule.InvokeVoidAsync("initInstallPrompt");
+
+        // Wire browser event -> .NET callback for install availability
         await JS.InvokeVoidAsync("eval", @"
-            window.__pwaNotifyDotNet = null;
-            window.addEventListener('pwa-update-available', () => {
-                if (window.__pwaNotifyDotNet) window.__pwaNotifyDotNet.invokeMethodAsync('NotifyUpdateAvailable');
+            window.__pwaInstallDotNet = null;
+            window.addEventListener('pwa-install-available', () => {
+                if (window.__pwaInstallDotNet) window.__pwaInstallDotNet.invokeMethodAsync('NotifyInstallAvailable');
+            });
+            window.addEventListener('pwa-installed', () => {
+                if (window.__pwaInstallDotNet) window.__pwaInstallDotNet.invokeMethodAsync('NotifyInstalled');
             });
         ");
-        await JS.InvokeVoidAsync("eval", $"window.__pwaNotifyDotNet = {_selfRef};");
+        await JS.InvokeVoidAsync("eval", $"window.__pwaInstallDotNet = {_selfRef};");
 
-        // If update already waiting, show banner now; else listen for it
+        // If install prompt was already captured (rare), show button immediately
+        var canInstallNow = await _installModule.InvokeAsync<bool>("canPromptInstall");
+        if (canInstallNow)
+        {
+            _installAvailable = true;
+            StateHasChanged();
+        }
+
+        // ---- Update module ----
+        _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
+
+        await JS.InvokeVoidAsync("eval", @"
+            window.__pwaUpdateDotNet = null;
+            window.addEventListener('pwa-update-available', () => {
+                if (window.__pwaUpdateDotNet) window.__pwaUpdateDotNet.invokeMethodAsync('NotifyUpdateAvailable');
+            });
+        ");
+        await JS.InvokeVoidAsync("eval", $"window.__pwaUpdateDotNet = {_selfRef};");
+
         var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
         if (waiting)
         {
             _updateAvailable = true;
             StateHasChanged();
         }
+    }
+
+    [JSInvokable]
+    public void NotifyInstallAvailable()
+    {
+        _installAvailable = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public void NotifyInstalled()
+    {
+        _installAvailable = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task InstallApp()
+    {
+        if (_installModule is null) return;
+
+        var accepted = await _installModule.InvokeAsync<bool>("showInstallPrompt");
+        if (accepted)
+            _installAvailable = false;
+
+        StateHasChanged();
     }
 
     [JSInvokable]
@@ -103,5 +135,4 @@
     {
         _selfRef?.Dispose();
     }
-    
 }
