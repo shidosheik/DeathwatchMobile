@@ -6,7 +6,13 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        @if (_installAvailable)
+        {
+            <button class="btn btn-sm btn-outline-light"
+                    @onclick="InstallApp">
+                Install App
+            </button>
+        }        
         </div>
 
         <article class="content px-4">
@@ -14,3 +20,28 @@
         </article>
     </main>
 </div>
+
+@code{
+    @inject IJSRuntime JS
+
+    private bool _installAvailable;
+    private IJSObjectReference? _installModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _installModule = await JS.InvokeAsync<IJSObjectReference>(
+            "import", "./install.js");
+
+        _installAvailable = await _installModule.InvokeAsync<bool>("initInstallPrompt");
+
+        StateHasChanged();
+    }
+
+    private async Task InstallApp()
+    {
+        if (_installModule is not null)
+            await _installModule.InvokeVoidAsync("showInstallPrompt");
+    }
+}
