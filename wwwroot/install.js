@@ -6,19 +6,20 @@ function isInstalled() {
 }
 
 export function initInstallPrompt() {
-  // Already installed → do not show button
-  if (isInstalled()) return { available: false, reason: "installed" };
+  console.log("[PWA] initInstallPrompt: installed?", isInstalled());
 
   window.addEventListener("beforeinstallprompt", (e) => {
+    console.log("[PWA] beforeinstallprompt fired");
     e.preventDefault();
     deferredPrompt = e;
     window.dispatchEvent(new Event("pwa-install-available"));
-  }, { once: true });
+  });
 
   window.addEventListener("appinstalled", () => {
+    console.log("[PWA] appinstalled fired");
     deferredPrompt = null;
     window.dispatchEvent(new Event("pwa-installed"));
-  }, { once: true });
+  });
 
   return { available: false, reason: "waiting" };
 }
