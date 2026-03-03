@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@implements IDisposable
 @inject IJSRuntime JS
 
 <div class="page">
@@ -8,26 +9,26 @@
 
     <main>
         <div class="top-row px-4">
-        @if (_installAvailable)
-        {
-            <button class="btn btn-sm btn-outline-light"
-                    @onclick="InstallApp">
-                Install App
-            </button>
-        }        
+            @if (_installAvailable)
+            {
+                <button class="btn btn-sm btn-outline-light"
+                        @onclick="InstallApp">
+                    Install App
+                </button>
+            }
         </div>
 
         @if (_updateAvailable)
-{
-        <div class="alert alert-warning d-flex justify-content-between align-items-center m-2">
-            <div>
-                <strong>Update available.</strong> Reload to apply the latest version.
+        {
+            <div class="alert alert-warning d-flex justify-content-between align-items-center m-2">
+                <div>
+                    <strong>Update available.</strong> Reload to apply the latest version.
+                </div>
+                <button class="btn btn-sm btn-dark" @onclick="ApplyUpdate">
+                    Reload
+                </button>
             </div>
-            <button class="btn btn-sm btn-dark" @onclick="ApplyUpdate">
-                Reload
-            </button>
-        </div>
-}
+        }
 
         <article class="content px-4">
             @Body
@@ -54,17 +55,8 @@
         _installModule = await JS.InvokeAsync<IJSObjectReference>("import", "./install.js");
         await _installModule.InvokeVoidAsync("initInstallPrompt");
 
-        // Wire browser event -> .NET callback for install availability
-        await JS.InvokeVoidAsync("eval", @"
-            window.__pwaInstallDotNet = null;
-            window.addEventListener('pwa-install-available', () => {
-                if (window.__pwaInstallDotNet) window.__pwaInstallDotNet.invokeMethodAsync('NotifyInstallAvailable');
-            });
-            window.addEventListener('pwa-installed', () => {
-                if (window.__pwaInstallDotNet) window.__pwaInstallDotNet.invokeMethodAsync('NotifyInstalled');
-            });
-        ");
-        await JS.InvokeVoidAsync("eval", $"window.__pwaInstallDotNet = {_selfRef};");
+        // Register callbacks (no eval)
+        await _installModule.InvokeVoidAsync("registerInstallCallbacks", _selfRef);
 
         // If install prompt was already captured (rare), show button immediately
         var canInstallNow = await _installModule.InvokeAsync<bool>("canPromptInstall");
@@ -76,14 +68,7 @@
 
         // ---- Update module ----
         _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
-
-        await JS.InvokeVoidAsync("eval", @"
-            window.__pwaUpdateDotNet = null;
-            window.addEventListener('pwa-update-available', () => {
-                if (window.__pwaUpdateDotNet) window.__pwaUpdateDotNet.invokeMethodAsync('NotifyUpdateAvailable');
-            });
-        ");
-        await JS.InvokeVoidAsync("eval", $"window.__pwaUpdateDotNet = {_selfRef};");
+        await _updateModule.InvokeVoidAsync("registerUpdateCallbacks", _selfRef);
 
         var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
         if (waiting)
@@ -97,14 +82,14 @@
     public void NotifyInstallAvailable()
     {
         _installAvailable = true;
-        InvokeAsync(StateHasChanged);
+        _ = InvokeAsync(StateHasChanged);
     }
 
     [JSInvokable]
     public void NotifyInstalled()
     {
         _installAvailable = false;
-        InvokeAsync(StateHasChanged);
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private async Task InstallApp()
@@ -113,7 +98,9 @@
 
         var accepted = await _installModule.InvokeAsync<bool>("showInstallPrompt");
         if (accepted)
+        {
             _installAvailable = false;
+        }
 
         StateHasChanged();
     }
@@ -122,7 +109,7 @@
     public void NotifyUpdateAvailable()
     {
         _updateAvailable = true;
-        InvokeAsync(StateHasChanged);
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private async Task ApplyUpdate()
@@ -133,6 +120,10 @@
 
     public void Dispose()
     {
+        // Unhook DOM listeners in JS modules
+        _ = _installModule?.InvokeVoidAsync("unregisterInstallCallbacks");
+        _ = _updateModule?.InvokeVoidAsync("unregisterUpdateCallbacks");
+
         _selfRef?.Dispose();
     }
 }
