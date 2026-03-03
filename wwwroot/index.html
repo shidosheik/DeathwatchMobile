@@ -40,6 +40,28 @@
     </script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+        if (!reg) return;
+
+        reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+        });
+        });
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+    });
+    }
+    </script>
+
 </body>
 
 </html>
