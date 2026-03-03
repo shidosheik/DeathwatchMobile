@@ -15,6 +15,18 @@
         }        
         </div>
 
+        @if (_updateAvailable)
+{
+        <div class="alert alert-warning d-flex justify-content-between align-items-center m-2">
+            <div>
+                <strong>Update available.</strong> Reload to apply the latest version.
+            </div>
+            <button class="btn btn-sm btn-dark" @onclick="ApplyUpdate">
+                Reload
+            </button>
+        </div>
+}
+
         <article class="content px-4">
             @Body
         </article>
@@ -44,4 +56,52 @@
         if (_installModule is not null)
             await _installModule.InvokeVoidAsync("showInstallPrompt");
     }
+
+    private bool _updateAvailable;
+    private IJSObjectReference? _updateModule;
+    private DotNetObjectReference<MainLayout>? _selfRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./update.js");
+
+        // Set up a browser event listener that calls back into .NET
+        _selfRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("eval", @"
+            window.__pwaNotifyDotNet = null;
+            window.addEventListener('pwa-update-available', () => {
+                if (window.__pwaNotifyDotNet) window.__pwaNotifyDotNet.invokeMethodAsync('NotifyUpdateAvailable');
+            });
+        ");
+        await JS.InvokeVoidAsync("eval", $"window.__pwaNotifyDotNet = {_selfRef};");
+
+        // If update already waiting, show banner now; else listen for it
+        var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
+        if (waiting)
+        {
+            _updateAvailable = true;
+            StateHasChanged();
+        }
+    }
+
+    [JSInvokable]
+    public void NotifyUpdateAvailable()
+    {
+        _updateAvailable = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ApplyUpdate()
+    {
+        if (_updateModule is null) return;
+        await _updateModule.InvokeVoidAsync("activateUpdateAndReload");
+    }
+
+    public void Dispose()
+    {
+        _selfRef?.Dispose();
+    }
+    
 }
