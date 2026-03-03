@@ -1,7 +1,11 @@
 ﻿@page "/"
-@inject NavigationManager Nav
 
-@code {
-    protected override void OnInitialized()
-        => Nav.NavigateTo("/characters", forceLoad: true);
-}
+<h3>Deathwatch Tracker</h3>
+
+<p>
+    <a class="btn btn-primary" href="/DeathwatchMobile/characters">Characters</a>
+</p>
+
+<p class="text-muted">
+    Tip: Install this app from your browser menu on Android.
+</p>
