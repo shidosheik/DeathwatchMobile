@@ -51,20 +51,17 @@
 
         _selfRef = DotNetObjectReference.Create(this);
 
-        // Build module URLs that work from ANY route (and GitHub Pages base paths)
+        // IMPORTANT: Use BaseUri so this works from ANY route (GitHub Pages + deep links)
         var installJsUrl = new Uri(new Uri(Nav.BaseUri), "install.js").ToString();
         var updateJsUrl  = new Uri(new Uri(Nav.BaseUri), "update.js").ToString();
 
         // ---- Install module ----
         _installModule = await JS.InvokeAsync<IJSObjectReference>("import", installJsUrl);
         await _installModule.InvokeVoidAsync("initInstallPrompt");
-
-        // Register install callbacks
         await _installModule.InvokeVoidAsync("registerInstallCallbacks", _selfRef);
 
-        // If install prompt was already captured, show button immediately
-        var canInstallNow = await _installModule.InvokeAsync<bool>("canPromptInstall");
-        if (canInstallNow)
+        // If the prompt is already captured, show immediately
+        if (await _installModule.InvokeAsync<bool>("canPromptInstall"))
         {
             _installAvailable = true;
             StateHasChanged();
@@ -72,12 +69,9 @@
 
         // ---- Update module ----
         _updateModule = await JS.InvokeAsync<IJSObjectReference>("import", updateJsUrl);
-
-        // Register update callbacks
         await _updateModule.InvokeVoidAsync("registerUpdateCallbacks", _selfRef);
 
-        var waiting = await _updateModule.InvokeAsync<bool>("initUpdateListener");
-        if (waiting)
+        if (await _updateModule.InvokeAsync<bool>("initUpdateListener"))
         {
             _updateAvailable = true;
             StateHasChanged();
