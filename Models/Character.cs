@@ -39,7 +39,15 @@ public sealed class Character
     public int MoveCharge { get; set; } = 0;
     public int MoveRun { get; set; } = 0;
 
+    // Skills
     public List<Skill> Skills { get; set; } = new();
+
+    // Experience
+    public List<XpEntry> XpLog { get; set; } = new();
+
+    public int XpEarned => XpLog.Where(x => x.Amount > 0).Sum(x => x.Amount);
+    public int XpSpent  => -XpLog.Where(x => x.Amount < 0).Sum(x => x.Amount);
+    public int XpRemaining => XpEarned - XpSpent;
 
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedUtc { get; set; } = DateTime.UtcNow;
