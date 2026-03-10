@@ -126,6 +126,7 @@ else
                                 <th>Gov.</th>
                                 <th>Training</th>
                                 <th>Target</th>
+                                <th style="width:80px;">Roll</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,6 +137,12 @@ else
                                     <td>@s.Governing</td>
                                     <td>@TrainingLabel(s.Training)</td>
                                     <td>@_character.SkillTarget(s)</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                @onclick="() => RollSkill(s)">
+                                            🎲
+                                        </button>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -210,7 +217,7 @@ else
                 <div class="dw-stat-sub-value">@stat.Bonus</div>
             </div>
             <button class="btn btn-sm btn-outline-light mt-1"
-                    @onclick="() => RollStat(label, value)">
+                    @onclick="() => RollStat(label, stat.Total)">
                 Roll
             </button>
         </div>
@@ -236,6 +243,24 @@ else
         else
         {
             _rollResult = $"{stat} FAIL: {roll} > {target}";
+        }
+    }
+
+    void RollSkill(Skill s)
+    {
+        if (_character is null)
+            return;
+
+        int target = _character.SkillTarget(s);
+        int roll = _rng.Next(1, 101);
+
+        if (roll <= target)
+        {
+            _rollResult = $"{s.Name} SUCCESS: {roll} ≤ {target}";
+        }
+        else
+        {
+            _rollResult = $"{s.Name} FAIL: {roll} > {target}";
         }
     }
 }

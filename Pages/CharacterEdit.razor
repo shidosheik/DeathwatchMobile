@@ -180,10 +180,6 @@ else
                 </div>
             </div>
 
-            @if (!string.IsNullOrEmpty(_lastRollResult))
-            {
-                <div class="alert alert-secondary py-2">@_lastRollResult</div>
-            }
 
             <div class="table-responsive">
                 <table class="table table-sm align-middle mb-0">
@@ -194,7 +190,6 @@ else
                             <th style="width:160px;">Training</th>
                             <th style="width:110px;">Mod</th>
                             <th style="width:110px;">Target</th>
-                            <th style="width:80px;">Roll</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -229,9 +224,6 @@ else
                                     <input class="form-control form-control-sm" type="number" @bind="s.MiscMod" />
                                 </td>
                                 <td>@_character.SkillTarget(s)</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => RollSkill(s)">🎲</button>
-                                </td>
                             </tr>
                         }
                     </tbody>
