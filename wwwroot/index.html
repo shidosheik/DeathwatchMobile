@@ -29,28 +29,48 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
+
     <script>
     (function () {
         var redirect = sessionStorage.redirect;
         delete sessionStorage.redirect;
         if (redirect && redirect !== location.pathname) {
-        history.replaceState(null, null, redirect);
+            history.replaceState(null, null, redirect);
         }
     })();
     </script>
+
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
 
     <script>
-    if ('serviceWorker' in navigator) {
-        const base = document.querySelector("base").getAttribute("href");
+    (function () {
+        if (!('serviceWorker' in navigator)) {
+            return;
+        }
 
-        navigator.serviceWorker.register(base + 'service-worker.js', { scope: base })
-            .then(reg => {
-                console.log('[PWA] Service worker registered:', reg.scope);
+        const base = document.querySelector('base')?.getAttribute('href') || '/';
+        let refreshing = false;
 
-                reg.addEventListener('updatefound', () => {
-                    const newWorker = reg.installing;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) {
+                return;
+            }
+
+            refreshing = true;
+            window.location.reload();
+        });
+
+        navigator.serviceWorker.register(`${base}service-worker.js`, { scope: base })
+            .then((registration) => {
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    if (!newWorker) {
+                        return;
+                    }
 
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
@@ -58,15 +78,14 @@
                         }
                     });
                 });
+
+                window.setInterval(() => {
+                    registration.update();
+                }, 30000);
             })
-            .catch(err => console.error('[PWA] SW registration failed:', err));
-
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            window.location.reload();
-        });
-    }
+            .catch((error) => console.error('[PWA] Service worker registration failed:', error));
+    })();
     </script>
-
 </body>
 
 </html>
