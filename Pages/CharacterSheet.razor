@@ -60,6 +60,12 @@ else
                 @StatCard("Fel", _character.Fel)
             </div>
         </div>
+        @if (!string.IsNullOrEmpty(_rollResult))
+        {
+            <div class="alert alert-info mt-3">
+                @_rollResult
+            </div>
+        }
 
         <div class="card p-3">
             <h5 class="mb-3">Trackers</h5>
@@ -203,6 +209,10 @@ else
                 <div class="dw-stat-sub-label">Bonus</div>
                 <div class="dw-stat-sub-value">@stat.Bonus</div>
             </div>
+            <button class="btn btn-sm btn-outline-light mt-1"
+                    @onclick="() => RollStat(label, value)">
+                Roll
+            </button>
         </div>
     </div>;
 
@@ -210,4 +220,22 @@ else
         <div class="dw-section-label">@label</div>
         <div class="dw-sheet-text">@DisplayOrFallback(value, "—")</div>
     </div>;
+
+    Random _rng = new();
+
+    string _rollResult = "";
+
+    void RollStat(string stat, int target)
+    {
+        int roll = _rng.Next(1, 101);
+
+        if (roll <= target)
+        {
+            _rollResult = $"{stat} SUCCESS: {roll} ≤ {target}";
+        }
+        else
+        {
+            _rollResult = $"{stat} FAIL: {roll} > {target}";
+        }
+    }
 }
