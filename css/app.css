@@ -112,3 +112,147 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.dw-stack {
+    display: grid;
+    gap: 1rem;
+}
+
+.dw-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    color: #f8fafc;
+}
+
+.dw-sheet-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+}
+
+.dw-badge-strip {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.dw-badge-card {
+    min-width: 6rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dw-badge-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+}
+
+.dw-badge-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.dw-badge-text {
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.dw-stat-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.dw-stat-card {
+    border: 1px solid #dbe1ea;
+    border-radius: 1rem;
+    padding: 0.85rem;
+    background: #fff;
+}
+
+.dw-stat-head {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 0.35rem;
+}
+
+.dw-stat-total {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.dw-stat-subgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+}
+
+.dw-stat-sub-label {
+    font-size: 0.72rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.dw-stat-sub-value {
+    font-weight: 600;
+}
+
+.dw-tracker-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.dw-tracker-card {
+    border: 1px solid #dbe1ea;
+    border-radius: 1rem;
+    padding: 0.9rem;
+    background: #fff;
+}
+
+.dw-tracker-label,
+.dw-section-label {
+    font-size: 0.78rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.35rem;
+}
+
+.dw-tracker-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.dw-tracker-lines {
+    display: grid;
+    gap: 0.2rem;
+    font-weight: 600;
+}
+
+.dw-sheet-text {
+    white-space: pre-wrap;
+}
+
+@media (max-width: 576px) {
+    .dw-sheet-name {
+        font-size: 1.35rem;
+    }
+
+    .dw-badge-card {
+        min-width: 5rem;
+    }
+}

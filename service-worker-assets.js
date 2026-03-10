@@ -1,13 +1,13 @@
 self.assetsManifest = {
-  "version": "YZoqYRpa",
+  "version": "+2GtBJIK",
   "assets": [
     {
       "hash": "sha256-25nB2U2jjgoP7agAfLBZtC9Qr+OWUpw9tEudBNDv9EY=",
       "url": "DeathwatchMobile.styles.css"
     },
     {
-      "hash": "sha256-AIabZ8G9S6joC16QqcP0HPJ+vy9DCudAGwB3hrmRa98=",
-      "url": "_framework/DeathwatchMobile.cxhtiyeqfh.wasm"
+      "hash": "sha256-E9ykZF7CLNPV3B6jP1ePJefdYZfWSt5mlcAGn/hO3A8=",
+      "url": "_framework/DeathwatchMobile.5ert0tm80t.wasm"
     },
     {
       "hash": "sha256-JHAfQNyqnfxJcWfmXXlqfkws6T9vhgr1zsp9PPe30jU=",
@@ -130,8 +130,8 @@ self.assetsManifest = {
       "url": "_framework/System.ObjectModel.e7e2agpnul.wasm"
     },
     {
-      "hash": "sha256-BbvUIPqHfnGTZT0MDxdvVwUgeHm7Mheb7/2TqVwX0Lo=",
-      "url": "_framework/System.Private.CoreLib.3qlswqud1o.wasm"
+      "hash": "sha256-dNkeADek+AP8HqDQUSHQFOVPq4FR6d1ji/k5UeRvPlQ=",
+      "url": "_framework/System.Private.CoreLib.wr69o166ha.wasm"
     },
     {
       "hash": "sha256-0/W/hbaL7spf3JU/TOy5Ji/tJYWRuY11fXALnjk3L6Y=",
@@ -158,7 +158,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.vbr1gezq3a.wasm"
     },
     {
-      "hash": "sha256-DghZzlV736FZ6f1EQZnzXcY1XbNHGasiTz6N0wyxPn8=",
+      "hash": "sha256-wuw876uoDjOXuxgVPhZpKmD7foo//f9WmlVd14Umzr8=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -194,7 +194,7 @@ self.assetsManifest = {
       "url": "_framework/icudt_no_CJK.lfu7j35m59.dat"
     },
     {
-      "hash": "sha256-NdR6BBtG0A492/UR/PUoJ0g3Y19lJ4fdogIrJWMC6TE=",
+      "hash": "sha256-IK+Kt22MmuKNqWzpkFXExZg7/WYJKZgtGEZlTM4aICw=",
       "url": "css/app.css"
     },
     {
