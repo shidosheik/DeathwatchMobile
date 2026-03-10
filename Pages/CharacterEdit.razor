@@ -3,11 +3,7 @@
 @inject DeathwatchMobile.Services.CharacterStore Store
 @inject NavigationManager Nav
 
-<h3>Edit Character</h3>
-
-<div class="mb-3">
-    <a href="/DeathwatchMobile/characters">← Back to list</a>
-</div>
+<PageTitle>Edit Character</PageTitle>
 
 @if (_character is null)
 {
@@ -15,180 +11,199 @@
 }
 else
 {
-    <div class="card p-3">
-        <div class="mb-2">
-            <label class="form-label">Name</label>
-            <input class="form-control" @bind="_character.Name" />
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h3 class="mb-0">Edit Character</h3>
+            <div class="text-muted">Update the sheet data used by the mobile view.</div>
         </div>
 
-        <div class="row">
-            <div class="col-6 mb-2">
-                <label class="form-label">Chapter</label>
-                <input class="form-control" @bind="_character.Chapter" />
-            </div>
-            <div class="col-6 mb-2">
-                <label class="form-label">Specialty</label>
-                <input class="form-control" @bind="_character.Specialty" />
-            </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="/DeathwatchMobile/characters">Back</a>
+            <a class="btn btn-outline-primary" href="@($"/DeathwatchMobile/characters/{Id}/sheet")">View Sheet</a>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-6 mb-2">
-                <label class="form-label">Demeanor</label>
-                <input class="form-control" @bind="_character.Demeanor" />
+    @if (!string.IsNullOrWhiteSpace(_saveMessage))
+    {
+        <div class="alert alert-success">@_saveMessage</div>
+    }
+
+    <div class="dw-stack">
+        <div class="card p-3">
+            <h5 class="mb-3">Identity</h5>
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" @bind="_character.Name" />
             </div>
-            <div class="col-3 mb-2">
-                <label class="form-label">Rank</label>
-                <input class="form-control" type="number" min="1" max="8" @bind="_character.Rank" />
-            </div>
-            <div class="col-3 mb-2">
-                <label class="form-label">Renown</label>
-                <input class="form-control" @bind="_character.Renown" />
-            </div>
-        </div>
 
-
-        <hr />
-        <h5>Characteristics</h5>
-
-        <div class="table-responsive">
-            <table class="table table-sm align-middle">
-                <thead>
-                <tr>
-                    <th>Stat</th>
-                    <th style="width: 110px;">Base</th>
-                    <th style="width: 110px;">Power Assist</th>
-                    <th style="width: 110px;">Advances</th>
-                    <th style="width: 110px;">Total</th>
-                    <th style="width: 110px;">Bonus</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @CharRow("WS", _character.WS)
-                    @CharRow("BS", _character.BS)
-                    @CharRow("S",  _character.S)
-                    @CharRow("T",  _character.T)
-                    @CharRow("Ag", _character.Ag)
-                    @CharRow("Int", _character.Int)
-                    @CharRow("Per", _character.Per)
-                    @CharRow("WP", _character.WP)
-                    @CharRow("Fel", _character.Fel)
-                </tbody>
-            </table>
-        </div>
-
-        <hr />
-        <h5>Derived</h5>
-
-        <div class="row">
-            <div class="col-6 col-md-3 mb-2">
-                <div class="card p-2">
-                    <div class="text-muted small">Strength Bonus</div>
-                    <div class="fs-4">@_character.S.Bonus</div>
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label">Chapter</label>
+                    <input class="form-control" @bind="_character.Chapter" />
                 </div>
-            </div>
-
-            <div class="col-6 col-md-3 mb-2">
-                <div class="card p-2">
-                    <div class="text-muted small">Toughness Bonus</div>
-                    <div class="fs-4">@_character.T.Bonus</div>
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label">Specialty</label>
+                    <input class="form-control" @bind="_character.Specialty" />
                 </div>
-            </div>
-
-            <div class="col-6 col-md-3 mb-2">
-                <div class="card p-2">
-                    <div class="text-muted small">Agility Bonus</div>
-                    <div class="fs-4">@_character.Ag.Bonus</div>
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label">Demeanor</label>
+                    <input class="form-control" @bind="_character.Demeanor" />
                 </div>
-            </div>
-
-            <div class="col-6 col-md-3 mb-2">
-                <div class="card p-2">
-                    <div class="text-muted small">Willpower Bonus</div>
-                    <div class="fs-4">@_character.WP.Bonus</div>
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Rank</label>
+                    <input class="form-control" type="number" min="1" max="8" @bind="_character.Rank" />
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Renown</label>
+                    <input class="form-control" @bind="_character.Renown" />
                 </div>
             </div>
         </div>
-        <div class="mt-2 text-muted">
-            SB: @_character.StrengthBonus &nbsp; • &nbsp; TB: @_character.ToughnessBonus
-        </div>
 
-        <hr />
-        <h5>Skills</h5>
+        <div class="card p-3">
+            <h5 class="mb-3">Characteristics</h5>
 
-        @if (_character.Skills is null)
-        {
-            <p>No skills list.</p>
-        }
-        else
-        {
             <div class="table-responsive">
-                <div class="row g-2 align-items-end mb-2">
-            <div class="col-12 col-md-4">
-                <label class="form-label">Search</label>
-                <input class="form-control form-control-sm" placeholder="e.g. Awareness, Dodge..."
-                    @bind="_skillSearch" @bind:event="oninput" />
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th style="width: 110px;">Base</th>
+                            <th style="width: 110px;">Assist</th>
+                            <th style="width: 110px;">Adv</th>
+                            <th style="width: 110px;">Total</th>
+                            <th style="width: 110px;">Bonus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @CharRow("WS", _character.WS)
+                        @CharRow("BS", _character.BS)
+                        @CharRow("S", _character.S)
+                        @CharRow("T", _character.T)
+                        @CharRow("Ag", _character.Ag)
+                        @CharRow("Int", _character.Int)
+                        @CharRow("Per", _character.Per)
+                        @CharRow("WP", _character.WP)
+                        @CharRow("Fel", _character.Fel)
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="col-6 col-md-3">
-                <label class="form-label">Governing</label>
-                <select class="form-select form-select-sm" @bind="_skillGoverning">
-                    <option value="">All</option>
-                    <option value="WS">WS</option>
-                    <option value="BS">BS</option>
-                    <option value="S">S</option>
-                    <option value="T">T</option>
-                    <option value="Ag">Ag</option>
-                    <option value="Int">Int</option>
-                    <option value="Per">Per</option>
-                    <option value="WP">WP</option>
-                    <option value="Fel">Fel</option>
-                </select>
+        <div class="card p-3">
+            <h5 class="mb-3">Trackers & Movement</h5>
+
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label">Wounds (Current / Max)</label>
+                    <div class="d-flex gap-2">
+                        <input class="form-control" type="number" min="0" @bind="_character.WoundsCurrent" />
+                        <input class="form-control" type="number" min="0" @bind="_character.WoundsMax" />
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label">Fate (Current / Max)</label>
+                    <div class="d-flex gap-2">
+                        <input class="form-control" type="number" min="0" @bind="_character.FateCurrent" />
+                        <input class="form-control" type="number" min="0" @bind="_character.FateMax" />
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Half Move</label>
+                    <input class="form-control" type="number" min="0" @bind="_character.MoveHalf" />
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Full Move</label>
+                    <input class="form-control" type="number" min="0" @bind="_character.MoveFull" />
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Charge</label>
+                    <input class="form-control" type="number" min="0" @bind="_character.MoveCharge" />
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <label class="form-label">Run</label>
+                    <input class="form-control" type="number" min="0" @bind="_character.MoveRun" />
+                </div>
             </div>
+        </div>
 
-            <div class="col-6 col-md-3">
-                <label class="form-label">Sort</label>
-                <select class="form-select form-select-sm" @bind="_skillSort">
-                    <option value="name">Name</option>
-                    <option value="target">Target</option>
-                    <option value="governing">Governing</option>
-                    <option value="training">Training</option>
-                </select>
-            </div>
-
-            <div class="col-12 col-md-2">
-                <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="trainedOnly" @bind="_trainedOnly" />
-                    <label class="form-check-label" for="trainedOnly">
-                        Trained only
-                    </label>
+        <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <h5 class="mb-0">Skills</h5>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="AddSkill">Add Skill</button>
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="ResetSkillFilters">Reset Filters</button>
                 </div>
             </div>
 
-            <div class="col-12 col-md-2">
-                <button class="btn btn-sm btn-outline-secondary w-100 mt-md-4"
-                        @onclick="ResetSkillFilters">
-                    Reset
-                </button>
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-4">
+                    <label class="form-label">Search</label>
+                    <input class="form-control form-control-sm" placeholder="Awareness, Dodge..."
+                           @bind="_skillSearch" @bind:event="oninput" />
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label">Governing</label>
+                    <select class="form-select form-select-sm" @bind="_skillGoverning">
+                        <option value="">All</option>
+                        <option value="WS">WS</option>
+                        <option value="BS">BS</option>
+                        <option value="S">S</option>
+                        <option value="T">T</option>
+                        <option value="Ag">Ag</option>
+                        <option value="Int">Int</option>
+                        <option value="Per">Per</option>
+                        <option value="WP">WP</option>
+                        <option value="Fel">Fel</option>
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label">Sort</label>
+                    <select class="form-select form-select-sm" @bind="_skillSort">
+                        <option value="name">Name</option>
+                        <option value="target">Target</option>
+                        <option value="governing">Governing</option>
+                        <option value="training">Training</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <div class="form-check mt-md-4">
+                        <input class="form-check-input" type="checkbox" id="trainedOnly" @bind="_trainedOnly" />
+                        <label class="form-check-label" for="trainedOnly">Trained only</label>
+                    </div>
+                </div>
             </div>
-        </div>
-                <table class="table table-sm align-middle">
+
+            @if (!string.IsNullOrEmpty(_lastRollResult))
+            {
+                <div class="alert alert-secondary py-2">@_lastRollResult</div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
                     <thead>
                         <tr>
                             <th>Skill</th>
-                            <th style="width:110px;">Governing</th>
+                            <th style="width:110px;">Gov.</th>
                             <th style="width:160px;">Training</th>
                             <th style="width:110px;">Mod</th>
                             <th style="width:110px;">Target</th>
-                            <th style="width: 80px;">Roll</th>
+                            <th style="width:80px;">Roll</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var s in FilteredSkills())
                         {
                             <tr>
-                                <td>@s.Name</td>
-
+                                <td>
+                                    <input class="form-control form-control-sm" @bind="s.Name" />
+                                </td>
                                 <td>
                                     <select class="form-select form-select-sm" @bind="s.Governing">
                                         <option value="WS">WS</option>
@@ -202,159 +217,147 @@ else
                                         <option value="Fel">Fel</option>
                                     </select>
                                 </td>
-
                                 <td>
                                     <select class="form-select form-select-sm" @bind="s.Training">
-                                        <option value="@DeathwatchMobile.Models.SkillTraining.Untrained">Untrained</option>
-                                        <option value="@DeathwatchMobile.Models.SkillTraining.Trained">Trained</option>
-                                        <option value="@DeathwatchMobile.Models.SkillTraining.Plus10">+10</option>
-                                        <option value="@DeathwatchMobile.Models.SkillTraining.Plus20">+20</option>
+                                        <option value="@SkillTraining.Untrained">Untrained</option>
+                                        <option value="@SkillTraining.Trained">Trained</option>
+                                        <option value="@SkillTraining.Plus10">+10</option>
+                                        <option value="@SkillTraining.Plus20">+20</option>
                                     </select>
                                 </td>
-
                                 <td>
                                     <input class="form-control form-control-sm" type="number" @bind="s.MiscMod" />
                                 </td>
-
+                                <td>@_character.SkillTarget(s)</td>
                                 <td>
-                                    @_character.SkillTarget(s)
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                            @onclick="() => RollSkill(s)">
-                                        🎲
-                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => RollSkill(s)">🎲</button>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-                @if (!string.IsNullOrEmpty(_lastRollResult))
-                {
-                    <div class="alert alert-secondary mt-2" role="alert">
-                        @_lastRollResult
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <div class="card p-3 h-100">
+                    <h5 class="mb-3">Combat Loadout</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Armor</label>
+                        <textarea class="form-control" rows="3" @bind="_character.Armor"></textarea>
                     </div>
-                }
-            </div>
 
-            <button class="btn btn-outline-primary btn-sm" @onclick="AddSkill">Add Skill</button>
-        }
+                    <div class="mb-3">
+                        <label class="form-label">Weapons</label>
+                        <textarea class="form-control" rows="4" @bind="_character.Weapons"></textarea>
+                    </div>
 
- 
-        <h6 class="mt-3">Movement</h6>
-        <div class="row">
-            <div class="col-3 mb-2">
-                <label class="form-label">Half</label>
-                <input class="form-control" type="number" min="0" @bind="_character.MoveHalf" />
-            </div>
-            <div class="col-3 mb-2">
-                <label class="form-label">Full</label>
-                <input class="form-control" type="number" min="0" @bind="_character.MoveFull" />
-            </div>
-            <div class="col-3 mb-2">
-                <label class="form-label">Charge</label>
-                <input class="form-control" type="number" min="0" @bind="_character.MoveCharge" />
-            </div>
-            <div class="col-3 mb-2">
-                <label class="form-label">Run</label>
-                <input class="form-control" type="number" min="0" @bind="_character.MoveRun" />
-            </div>
-        </div>
-
-        <hr />
-        <h5>Experience</h5>
-
-        <div class="row mb-3">
-            <div class="col-4">
-                <div class="card p-2 text-center">
-                    <div class="small text-muted">Earned</div>
-                    <div class="fs-4">@_character.XpEarned</div>
+                    <div class="mb-0">
+                        <label class="form-label">Gear</label>
+                        <textarea class="form-control" rows="4" @bind="_character.Gear"></textarea>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-4">
-                <div class="card p-2 text-center">
-                    <div class="small text-muted">Spent</div>
-                    <div class="fs-4">@_character.XpSpent</div>
-                </div>
-            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card p-3 h-100">
+                    <h5 class="mb-3">Abilities & Notes</h5>
 
-            <div class="col-4">
-                <div class="card p-2 text-center">
-                    <div class="small text-muted">Remaining</div>
-                    <div class="fs-4 fw-bold">@_character.XpRemaining</div>
+                    <div class="mb-3">
+                        <label class="form-label">Talents & Traits</label>
+                        <textarea class="form-control" rows="4" @bind="_character.TalentsAndTraits"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Solo Mode Ability</label>
+                        <textarea class="form-control" rows="3" @bind="_character.SoloModeAbility"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Squad Mode Ability</label>
+                        <textarea class="form-control" rows="3" @bind="_character.SquadModeAbility"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Chapter Trapping</label>
+                        <textarea class="form-control" rows="3" @bind="_character.ChapterTrapping"></textarea>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" rows="4" @bind="_character.Notes"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-2 mb-2">
-            <div class="col-4">
-                <input class="form-control form-control-sm"
-                    type="number"
-                    @bind="_newXpAmount"
-                    placeholder="Amount (+ or -)" />
+        <div class="card p-3">
+            <h5 class="mb-3">Experience</h5>
+
+            <div class="row mb-3">
+                <div class="col-4">
+                    <div class="card p-2 text-center">
+                        <div class="small text-muted">Earned</div>
+                        <div class="fs-4">@_character.XpEarned</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-2 text-center">
+                        <div class="small text-muted">Spent</div>
+                        <div class="fs-4">@_character.XpSpent</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-2 text-center">
+                        <div class="small text-muted">Remaining</div>
+                        <div class="fs-4 fw-bold">@_character.XpRemaining</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-6">
-                <input class="form-control form-control-sm"
-                    @bind="_newXpReason"
-                    placeholder="Reason (e.g. Rank 2 Advance)" />
+            <div class="row g-2 mb-3">
+                <div class="col-4">
+                    <input class="form-control form-control-sm" type="number" @bind="_newXpAmount" placeholder="Amount" />
+                </div>
+
+                <div class="col-8">
+                    <input class="form-control form-control-sm" @bind="_newXpReason" placeholder="Reason" />
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-sm btn-primary" @onclick="AddXpEntry">Add XP Entry</button>
+                </div>
             </div>
 
-            <div class="col-2">
-                <button class="btn btn-sm btn-primary w-100"
-                        @onclick="AddXpEntry">
-                    Add
-                </button>
-            </div>
-        </div>
-
-        @if (_character.XpLog.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var x in _character.XpLog.OrderByDescending(x => x.Date))
-                        {
+            @if (_character.XpLog.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
                             <tr>
-                                <td>@x.Date.ToShortDateString()</td>
-                                <td class="@(x.Amount < 0 ? "text-danger" : "text-success")">
-                                    @x.Amount
-                                </td>
-                                <td>@x.Reason</td>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Reason</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-        <div class="row">
-            <div class="col-6 mb-2">
-                <label class="form-label">Wounds (Current / Max)</label>
-                <div class="d-flex gap-2">
-                    <input class="form-control" type="number" min="0" @bind="_character.WoundsCurrent" />
-                    <input class="form-control" type="number" min="0" @bind="_character.WoundsMax" />
+                        </thead>
+                        <tbody>
+                            @foreach (var x in _character.XpLog.OrderByDescending(x => x.Date))
+                            {
+                                <tr>
+                                    <td>@x.Date.ToShortDateString()</td>
+                                    <td class="@(x.Amount < 0 ? "text-danger" : "text-success")">@x.Amount</td>
+                                    <td>@x.Reason</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        
-            <div class="col-6 mb-2">
-                <label class="form-label">Fate (Current / Max)</label>
-                <div class="d-flex gap-2">
-                    <input class="form-control" type="number" min="0" @bind="_character.FateCurrent" />
-                    <input class="form-control" type="number" min="0" @bind="_character.FateMax" />
-                </div>
-            </div>
+            }
         </div>
 
-        <div class="d-flex gap-2 mt-3">
+        <div class="d-flex gap-2 flex-wrap">
             <button class="btn btn-success" @onclick="Save">Save</button>
             <button class="btn btn-outline-danger" @onclick="Delete">Delete</button>
         </div>
@@ -364,17 +367,20 @@ else
 @code {
     [Parameter] public string Id { get; set; } = "";
     private Character? _character;
+    private string _saveMessage = "";
 
     protected override async Task OnInitializedAsync()
     {
         _character = await Store.GetByIdAsync(Id) ?? new Character { Id = Id };
+        _character.Skills ??= new List<Skill>();
     }
 
     private async Task Save()
     {
         if (_character is null) return;
+
         await Store.UpsertAsync(_character);
-        Nav.NavigateTo("/DeathwatchMobile/characters");
+        _saveMessage = $"Saved {_character.UpdatedUtc.ToLocalTime():g}";
     }
 
     private async Task Delete()
@@ -383,7 +389,7 @@ else
         Nav.NavigateTo("/DeathwatchMobile/characters");
     }
 
-    private RenderFragment CharRow(string label, DeathwatchMobile.Models.StatBlock stat) => __builder =>
+    private RenderFragment CharRow(string label, StatBlock stat) => __builder =>
     {
         var seq = 0;
         __builder.OpenElement(seq++, "tr");
@@ -392,39 +398,30 @@ else
         __builder.AddContent(seq++, label);
         __builder.CloseElement();
 
-        __builder.OpenElement(seq++, "td");
-        __builder.OpenElement(seq++, "input");
-        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
-        __builder.AddAttribute(seq++, "type", "number");
-        __builder.AddAttribute(seq++, "min", "0");
-        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.Base));
-        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(this, v => stat.Base = v, stat.Base));
-        __builder.CloseElement();
-        __builder.CloseElement();
+        void NumberInput(string css, int value, Action<int> setter, string? min = null)
+        {
+            __builder.OpenElement(seq++, "td");
+            __builder.OpenElement(seq++, "input");
+            __builder.AddAttribute(seq++, "class", css);
+            __builder.AddAttribute(seq++, "type", "number");
+            if (!string.IsNullOrWhiteSpace(min))
+            {
+                __builder.AddAttribute(seq++, "min", min);
+            }
+            __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(value));
+            __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(this, setter, value));
+            __builder.CloseElement();
+            __builder.CloseElement();
+        }
 
-        __builder.OpenElement(seq++, "td");
-        __builder.OpenElement(seq++, "input");
-        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
-        __builder.AddAttribute(seq++, "type", "number");
-        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.PowerAssist));
-        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(
-            this, v => stat.PowerAssist = v, stat.PowerAssist));
-        __builder.CloseElement();
-        __builder.CloseElement();
-
-        __builder.OpenElement(seq++, "td");
-        __builder.OpenElement(seq++, "input");
-        __builder.AddAttribute(seq++, "class", "form-control form-control-sm");
-        __builder.AddAttribute(seq++, "type", "number");
-        __builder.AddAttribute(seq++, "min", "0");
-        __builder.AddAttribute(seq++, "value", BindConverter.FormatValue(stat.Advances));
-        __builder.AddAttribute(seq++, "onchange", EventCallback.Factory.CreateBinder<int>(this, v => stat.Advances = v, stat.Advances));
-        __builder.CloseElement();
-        __builder.CloseElement();
+        NumberInput("form-control form-control-sm", stat.Base, v => stat.Base = v, "0");
+        NumberInput("form-control form-control-sm", stat.PowerAssist, v => stat.PowerAssist = v);
+        NumberInput("form-control form-control-sm", stat.Advances, v => stat.Advances = v, "0");
 
         __builder.OpenElement(seq++, "td");
         __builder.AddContent(seq++, stat.Total);
         __builder.CloseElement();
+
         __builder.OpenElement(seq++, "td");
         __builder.AddContent(seq++, stat.Bonus);
         __builder.CloseElement();
@@ -434,46 +431,41 @@ else
 
     private void AddSkill()
     {
-        _character?.Skills.Add(new DeathwatchMobile.Models.Skill
+        _character?.Skills.Add(new Skill
         {
             Name = "New Skill",
             Governing = "Per",
-            Training = DeathwatchMobile.Models.SkillTraining.Untrained
+            Training = SkillTraining.Untrained
         });
     }
 
-    // Skill filtering/sorting
     private string _skillSearch = "";
-    private string _skillGoverning = ""; // "" = all
+    private string _skillGoverning = "";
     private string _skillSort = "name";
     private bool _trainedOnly = false;
 
-    private IEnumerable<DeathwatchMobile.Models.Skill> FilteredSkills()
+    private IEnumerable<Skill> FilteredSkills()
     {
-        if (_character?.Skills is null) return Enumerable.Empty<DeathwatchMobile.Models.Skill>();
+        if (_character?.Skills is null) return Enumerable.Empty<Skill>();
 
-        IEnumerable<DeathwatchMobile.Models.Skill> q = _character.Skills;
+        IEnumerable<Skill> q = _character.Skills;
 
-        // Search
         if (!string.IsNullOrWhiteSpace(_skillSearch))
         {
-            var s = _skillSearch.Trim();
-            q = q.Where(x => x.Name.Contains(s, StringComparison.OrdinalIgnoreCase));
+            var search = _skillSearch.Trim();
+            q = q.Where(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
         }
 
-        // Governing filter
         if (!string.IsNullOrWhiteSpace(_skillGoverning))
         {
             q = q.Where(x => x.Governing == _skillGoverning);
         }
 
-        // Trained-only
         if (_trainedOnly)
         {
-            q = q.Where(x => x.Training != DeathwatchMobile.Models.SkillTraining.Untrained);
+            q = q.Where(x => x.Training != SkillTraining.Untrained);
         }
 
-        // Sort
         q = _skillSort switch
         {
             "target" => q.OrderByDescending(x => _character!.SkillTarget(x)).ThenBy(x => x.Name),
@@ -493,16 +485,14 @@ else
         _trainedOnly = false;
     }
 
-    // XP Log
     private int _newXpAmount;
     private string _newXpReason = "";
 
     private async Task AddXpEntry()
     {
-        if (_character == null) return;
-        if (_newXpAmount == 0) return;
+        if (_character == null || _newXpAmount == 0) return;
 
-        _character.XpLog.Add(new DeathwatchMobile.Models.XpEntry
+        _character.XpLog.Add(new XpEntry
         {
             Amount = _newXpAmount,
             Reason = _newXpReason
@@ -511,28 +501,23 @@ else
         _newXpAmount = 0;
         _newXpReason = "";
 
-        await Save(); // reuse your save method
+        await Save();
     }
 
-    // Skill rolling
     private string _lastRollResult = "";
     private readonly Random _rng = new();
 
-    private void RollSkill(DeathwatchMobile.Models.Skill s)
+    private void RollSkill(Skill s)
     {
         if (_character == null) return;
 
-        int roll = _rng.Next(1, 101);
-        int target = _character.SkillTarget(s);
+        var roll = _rng.Next(1, 101);
+        var target = _character.SkillTarget(s);
+        var margin = Math.Abs(target - roll);
+        var degrees = (margin / 10) + 1;
+        var success = roll <= target;
 
-        int degrees = Math.Abs(target - roll) / 10;
-
-        bool success = roll <= target;
-
-        _lastRollResult =
-            $"{s.Name}: Rolled {roll} vs {target} → " +
-            (success
-                ? $"SUCCESS ({degrees} DoS)"
-                : $"FAILURE ({degrees} DoF)");
+        _lastRollResult = $"{s.Name}: rolled {roll} vs {target} → " +
+            (success ? $"SUCCESS ({degrees} DoS)" : $"FAILURE ({degrees} DoF)");
     }
 }

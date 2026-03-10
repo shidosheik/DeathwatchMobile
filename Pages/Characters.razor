@@ -4,9 +4,16 @@
 @inject DeathwatchMobile.Services.CharacterStore Store
 @inject NavigationManager Nav
 
-<h3>Characters</h3>
+<PageTitle>Characters</PageTitle>
 
-<button class="btn btn-primary" @onclick="CreateAndGo">New Character</button>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Characters</h3>
+        <div class="text-muted">Your kill-team roster and saved sheets.</div>
+    </div>
+
+    <button class="btn btn-primary" @onclick="CreateAndGo">New Character</button>
+</div>
 
 @if (_characters is null)
 {
@@ -14,22 +21,35 @@
 }
 else if (_characters.Count == 0)
 {
-    <p class="mt-3">No characters yet.</p>
+    <div class="card p-4 mt-3 text-center">
+        <h5>No characters yet</h5>
+        <p class="text-muted mb-3">Create your first Deathwatch sheet to get started.</p>
+        <div>
+            <button class="btn btn-primary" @onclick="CreateAndGo">Create Character</button>
+        </div>
+    </div>
 }
 else
 {
-    <ul class="list-group mt-3">
+    <div class="dw-stack">
         @foreach (var c in _characters.OrderByDescending(x => x.UpdatedUtc))
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>@(string.IsNullOrWhiteSpace(c.Name) ? "(Unnamed)" : c.Name)</strong>
-                    <div class="text-muted small">@c.Chapter • @c.Specialty • Rank @c.Rank</div>
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <div class="fs-5 fw-semibold">@(string.IsNullOrWhiteSpace(c.Name) ? "(Unnamed)" : c.Name)</div>
+                        <div class="text-muted small">@DisplayOrDash(c.Chapter) • @DisplayOrDash(c.Specialty) • Rank @c.Rank</div>
+                        <div class="text-muted small">Updated @c.UpdatedUtc.ToLocalTime().ToString("g")</div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a class="btn btn-sm btn-outline-primary" href="@($"characters/{c.Id}/sheet")">Sheet</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="@($"characters/{c.Id}")">Edit</a>
+                    </div>
                 </div>
-                <a class="btn btn-sm btn-outline-secondary" href="@($"characters/{c.Id}")">Edit</a>
-            </li>
+            </div>
         }
-    </ul>
+    </div>
 }
 
 @code {
@@ -42,11 +62,15 @@ else
 
     private async Task CreateAndGo()
     {
-        var c = new Character();
-        c.Skills = DefaultSkills.Create();
+        var c = new Character
+        {
+            Skills = DefaultSkills.Create()
+        };
+
         await Store.UpsertAsync(c);
-        Nav.NavigateTo($"characters/{c.Id}");
+        Nav.NavigateTo($"characters/{c.Id}/sheet");
     }
 
-    
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "—" : value;
 }

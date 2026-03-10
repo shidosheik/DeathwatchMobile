@@ -1,0 +1,213 @@
+@page "/characters/{Id}/sheet"
+@using DeathwatchMobile.Models
+@inject DeathwatchMobile.Services.CharacterStore Store
+@inject NavigationManager Nav
+
+<PageTitle>Character Sheet</PageTitle>
+
+@if (_character is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h3 class="mb-0">Character Sheet</h3>
+            <div class="text-muted">Quick view for table use.</div>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="/DeathwatchMobile/characters">Back</a>
+            <a class="btn btn-primary" href="@($"/DeathwatchMobile/characters/{Id}")">Edit</a>
+        </div>
+    </div>
+
+    <div class="dw-sheet-header mb-3">
+        <div>
+            <div class="dw-sheet-name">@DisplayOrFallback(_character.Name, "Unnamed Battle-Brother")</div>
+            <div class="text-muted">@DisplayOrFallback(_character.Chapter, "Chapter not set") • @DisplayOrFallback(_character.Specialty, "Specialty not set")</div>
+        </div>
+
+        <div class="dw-badge-strip">
+            <div class="dw-badge-card">
+                <div class="dw-badge-label">Rank</div>
+                <div class="dw-badge-value">@_character.Rank</div>
+            </div>
+            <div class="dw-badge-card">
+                <div class="dw-badge-label">Renown</div>
+                <div class="dw-badge-value dw-badge-text">@DisplayOrFallback(_character.Renown, "—")</div>
+            </div>
+            <div class="dw-badge-card">
+                <div class="dw-badge-label">Demeanor</div>
+                <div class="dw-badge-value dw-badge-text">@DisplayOrFallback(_character.Demeanor, "—")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dw-stack">
+        <div class="card p-3">
+            <h5 class="mb-3">Characteristics</h5>
+            <div class="dw-stat-grid">
+                @StatCard("WS", _character.WS)
+                @StatCard("BS", _character.BS)
+                @StatCard("S", _character.S)
+                @StatCard("T", _character.T)
+                @StatCard("Ag", _character.Ag)
+                @StatCard("Int", _character.Int)
+                @StatCard("Per", _character.Per)
+                @StatCard("WP", _character.WP)
+                @StatCard("Fel", _character.Fel)
+            </div>
+        </div>
+
+        <div class="card p-3">
+            <h5 class="mb-3">Trackers</h5>
+            <div class="dw-tracker-grid">
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">Wounds</div>
+                    <div class="dw-tracker-value">@_character.WoundsCurrent / @_character.WoundsMax</div>
+                </div>
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">Fate</div>
+                    <div class="dw-tracker-value">@_character.FateCurrent / @_character.FateMax</div>
+                </div>
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">SB</div>
+                    <div class="dw-tracker-value">@_character.S.Bonus</div>
+                </div>
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">TB</div>
+                    <div class="dw-tracker-value">@_character.T.Bonus</div>
+                </div>
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">Movement</div>
+                    <div class="dw-tracker-lines">
+                        <div>Half @_character.MoveHalf</div>
+                        <div>Full @_character.MoveFull</div>
+                        <div>Charge @_character.MoveCharge</div>
+                        <div>Run @_character.MoveRun</div>
+                    </div>
+                </div>
+                <div class="dw-tracker-card">
+                    <div class="dw-tracker-label">XP</div>
+                    <div class="dw-tracker-lines">
+                        <div>Earned @_character.XpEarned</div>
+                        <div>Spent @_character.XpSpent</div>
+                        <div>Remaining @_character.XpRemaining</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <h5 class="mb-0">Skills</h5>
+                <div class="text-muted small">@_character.Skills.Count skill entries</div>
+            </div>
+
+            @if (_character.Skills.Count == 0)
+            {
+                <div class="text-muted">No skills added yet.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Skill</th>
+                                <th>Gov.</th>
+                                <th>Training</th>
+                                <th>Target</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in _character.Skills.OrderBy(x => x.Name))
+                            {
+                                <tr>
+                                    <td>@s.Name</td>
+                                    <td>@s.Governing</td>
+                                    <td>@TrainingLabel(s.Training)</td>
+                                    <td>@_character.SkillTarget(s)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <div class="card p-3 h-100">
+                    <h5>Combat Loadout</h5>
+                    @TextBlock("Armor", _character.Armor)
+                    @TextBlock("Weapons", _character.Weapons)
+                    @TextBlock("Gear", _character.Gear)
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card p-3 h-100">
+                    <h5>Abilities & Notes</h5>
+                    @TextBlock("Talents & Traits", _character.TalentsAndTraits)
+                    @TextBlock("Solo Mode", _character.SoloModeAbility)
+                    @TextBlock("Squad Mode", _character.SquadModeAbility)
+                    @TextBlock("Chapter Trapping", _character.ChapterTrapping)
+                    @TextBlock("Notes", _character.Notes)
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    private Character? _character;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _character = await Store.GetByIdAsync(Id) ?? new Character { Id = Id };
+    }
+
+    private static string DisplayOrFallback(string? value, string fallback)
+        => string.IsNullOrWhiteSpace(value) ? fallback : value;
+
+    private static string TrainingLabel(SkillTraining training) => training switch
+    {
+        SkillTraining.Untrained => "Untrained",
+        SkillTraining.Trained => "Trained",
+        SkillTraining.Plus10 => "+10",
+        SkillTraining.Plus20 => "+20",
+        _ => "—"
+    };
+
+    private RenderFragment StatCard(string label, StatBlock stat) => @<div class="dw-stat-card">
+        <div class="dw-stat-head">@label</div>
+        <div class="dw-stat-total">@stat.Total</div>
+        <div class="dw-stat-subgrid">
+            <div>
+                <div class="dw-stat-sub-label">Base</div>
+                <div class="dw-stat-sub-value">@stat.Base</div>
+            </div>
+            <div>
+                <div class="dw-stat-sub-label">Adv</div>
+                <div class="dw-stat-sub-value">@stat.Advances</div>
+            </div>
+            <div>
+                <div class="dw-stat-sub-label">Assist</div>
+                <div class="dw-stat-sub-value">@stat.PowerAssist</div>
+            </div>
+            <div>
+                <div class="dw-stat-sub-label">Bonus</div>
+                <div class="dw-stat-sub-value">@stat.Bonus</div>
+            </div>
+        </div>
+    </div>;
+
+    private RenderFragment TextBlock(string label, string? value) => @<div class="mb-3">
+        <div class="dw-section-label">@label</div>
+        <div class="dw-sheet-text">@DisplayOrFallback(value, "—")</div>
+    </div>;
+}

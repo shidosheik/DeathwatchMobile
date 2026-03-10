@@ -1,0 +1,20 @@
+Updated app files for a new character sheet UI.
+
+What was added
+- New read-friendly sheet page at /characters/{id}/sheet
+- Improved character list with Sheet and Edit buttons
+- Expanded character model with sheet text sections:
+  Armor, Weapons, Gear, TalentsAndTraits, SoloModeAbility,
+  SquadModeAbility, ChapterTrapping, Notes
+- Refreshed edit page to manage the new sheet fields
+- New CSS classes for a mobile-friendly sheet layout
+
+Important
+- The source files are updated.
+- The prebuilt /docs publish output was not regenerated in this environment.
+  Rebuild/publish the Blazor app before deploying to GitHub Pages.
+
+Suggested publish flow
+1. dotnet publish -c Release
+2. Copy the generated wwwroot publish output into /docs if that is your deployment workflow
+3. Push to GitHub

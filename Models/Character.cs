@@ -3,7 +3,7 @@ namespace DeathwatchMobile.Models;
 public sealed class Character
 {
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    public int SchemaVersion { get; set; } = 1;
+    public int SchemaVersion { get; set; } = 2;
 
     // Identity
     public string Name { get; set; } = "";
@@ -24,8 +24,8 @@ public sealed class Character
     public StatBlock WP { get; set; } = new();
     public StatBlock Fel { get; set; } = new();
 
-    public int StrengthBonus => (S.Total / 10);
-    public int ToughnessBonus => (T.Total / 10);
+    public int StrengthBonus => S.Total / 10;
+    public int ToughnessBonus => T.Total / 10;
 
     // Trackers
     public int WoundsMax { get; set; } = 0;
@@ -33,11 +33,21 @@ public sealed class Character
     public int FateMax { get; set; } = 0;
     public int FateCurrent { get; set; } = 0;
 
-    // Movement (editable; we can add auto-calc later)
+    // Movement
     public int MoveHalf { get; set; } = 0;
     public int MoveFull { get; set; } = 0;
     public int MoveCharge { get; set; } = 0;
     public int MoveRun { get; set; } = 0;
+
+    // Sheet text blocks
+    public string Armor { get; set; } = "";
+    public string Weapons { get; set; } = "";
+    public string Gear { get; set; } = "";
+    public string TalentsAndTraits { get; set; } = "";
+    public string SoloModeAbility { get; set; } = "";
+    public string SquadModeAbility { get; set; } = "";
+    public string ChapterTrapping { get; set; } = "";
+    public string Notes { get; set; } = "";
 
     // Skills
     public List<Skill> Skills { get; set; } = new();
@@ -72,7 +82,7 @@ public sealed class Character
 
         var trainingBonus = s.Training switch
         {
-            SkillTraining.Untrained => -20,   // common DW convention
+            SkillTraining.Untrained => -20,
             SkillTraining.Trained => 0,
             SkillTraining.Plus10 => 10,
             SkillTraining.Plus20 => 20,
@@ -87,10 +97,7 @@ public sealed class StatBlock
 {
     public int Base { get; set; } = 0;
     public int Advances { get; set; } = 0;
-    public int PowerAssist { get; set; } = 0; // can be + or -
+    public int PowerAssist { get; set; } = 0;
     public int Total => Base + Advances + PowerAssist;
-
-    // Deathwatch-style “bonus” (tens digit)
     public int Bonus => Total / 10;
 }
-
