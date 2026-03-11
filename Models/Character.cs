@@ -40,7 +40,12 @@ public sealed class Character
     public int MoveRun { get; set; } = 0;
 
     // Sheet text blocks
-    public string Armor { get; set; } = "";
+    public int ArmorHead { get; set; }
+    public int ArmorLeftArm { get; set; }
+    public int ArmorRightArm { get; set; }
+    public int ArmorBody { get; set; }
+    public int ArmorLeftLeg { get; set; }
+    public int ArmorRightLeg { get; set; }
     public string Weapons { get; set; } = "";
     public string Gear { get; set; } = "";
     public string TalentsAndTraits { get; set; } = "";

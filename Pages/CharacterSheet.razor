@@ -155,7 +155,16 @@ else
             <div class="col-12 col-lg-6">
                 <div class="card p-3 h-100">
                     <h5>Combat Loadout</h5>
-                    @TextBlock("Armor", _character.Armor)
+                        <h5>Armor</h5>
+
+                        <div class="dw-armor-grid">
+                            <div>Head</div><div>@_character.ArmorHead</div>
+                            <div>Left Arm</div><div>@_character.ArmorLeftArm</div>
+                            <div>Right Arm</div><div>@_character.ArmorRightArm</div>
+                            <div>Body</div><div>@_character.ArmorBody</div>
+                            <div>Left Leg</div><div>@_character.ArmorLeftLeg</div>
+                            <div>Right Leg</div><div>@_character.ArmorRightLeg</div>
+                        </div>
                     @TextBlock("Weapons", _character.Weapons)
                     @TextBlock("Gear", _character.Gear)
                 </div>

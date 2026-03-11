@@ -238,7 +238,40 @@ else
 
                     <div class="mb-3">
                         <label class="form-label">Armor</label>
-                        <textarea class="form-control" rows="3" @bind="_character.Armor"></textarea>
+
+                        <div class="row g-2">
+
+                            <div class="col-4">
+                                <label class="form-label">Head</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorHead" />
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Left Arm</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorLeftArm" />
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Right Arm</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorRightArm" />
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Body</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorBody" />
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Left Leg</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorLeftLeg" />
+                            </div>
+
+                            <div class="col-4">
+                                <label class="form-label">Right Leg</label>
+                                <InputNumber class="form-control" @bind-Value="_character.ArmorRightLeg" />
+                            </div>
+
+                        </div>
                     </div>
 
                     <div class="mb-3">
