@@ -1,21 +1,21 @@
 self.assetsManifest = {
-  "version": "5Ymu31gx",
+  "version": "8Yh/omdJ",
   "assets": [
     {
       "hash": "sha256-25nB2U2jjgoP7agAfLBZtC9Qr+OWUpw9tEudBNDv9EY=",
       "url": "DeathwatchMobile.styles.css"
     },
     {
-      "hash": "sha256-3E05Wr1kZI8WRiBOAq95ktadKDDCRt2BCVbmGKUzHCM=",
-      "url": "_framework/DeathwatchMobile.w7otewq5im.wasm"
+      "hash": "sha256-v4pEEcNIBx8C+z3hLxgjYzcfAvbSr3K0PKaoKTxBb3k=",
+      "url": "_framework/DeathwatchMobile.jby4cukoza.wasm"
     },
     {
       "hash": "sha256-up2+eLHI6mfOpci3zGDaCubQRc39XG+LhdCNi3jVAZI=",
       "url": "_framework/Microsoft.AspNetCore.Components.Forms.uyuitmimef.wasm"
     },
     {
-      "hash": "sha256-smkDGy3swGYMHfU4HUV6FeHNULofB1pizuCmiMzES1o=",
-      "url": "_framework/Microsoft.AspNetCore.Components.Web.u5a9yjo7us.wasm"
+      "hash": "sha256-2GSkZBvSDWldXCnZ8KIKmIjThiENOJSqflfkIdLPqEM=",
+      "url": "_framework/Microsoft.AspNetCore.Components.Web.8kspw2enap.wasm"
     },
     {
       "hash": "sha256-Y9y4a637WBoDa08GX7Qxx63oDFsCVE/4v8oZCvLkKTo=",
@@ -90,8 +90,8 @@ self.assetsManifest = {
       "url": "_framework/System.Collections.Specialized.79x43i3n4t.wasm"
     },
     {
-      "hash": "sha256-Jujk0tzPaQWOonGrqXA0ee3u1cDiZ6G7rswLA62wYIM=",
-      "url": "_framework/System.Collections.imr0gn8lgq.wasm"
+      "hash": "sha256-aqkVq/tSnyJemIe8FhWLn6D9MlsvBBdAGemiW3vtNgA=",
+      "url": "_framework/System.Collections.mphrjxoyiz.wasm"
     },
     {
       "hash": "sha256-IiruRMZPvmLIUSMuEKzybZYUNT+yw5tZ0r1V3P/7SWQ=",
@@ -118,8 +118,8 @@ self.assetsManifest = {
       "url": "_framework/System.Linq.Expressions.p82buz6ue9.wasm"
     },
     {
-      "hash": "sha256-1KjOxt9dpcN7jE3cskNhANAf8sCewURJd6iXBMNQkls=",
-      "url": "_framework/System.Linq.w9vunizmvt.wasm"
+      "hash": "sha256-tRVj2x2elGbU6ThkXtbQHMbmJqix8QIN8mS9qId24aY=",
+      "url": "_framework/System.Linq.zm9mcltxjf.wasm"
     },
     {
       "hash": "sha256-wG3oBYVzvLi7phYZ0FIDPuQdSg4TSzjnQHAp39GKEnY=",
@@ -170,7 +170,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.vbr1gezq3a.wasm"
     },
     {
-      "hash": "sha256-sjDs5bNbZ626pS+nDbBJD6btlbNDdmMi1J4sZ6VoeAs=",
+      "hash": "sha256-Ne/i3rexCsWy9mgU+yuSFgCFetEb/YbvofxfhMDgoNA=",
       "url": "_framework/blazor.boot.json"
     },
     {
