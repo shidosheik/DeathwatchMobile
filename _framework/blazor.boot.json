@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "DeathwatchMobile",
   "resources": {
-    "hash": "sha256-X5aco1yh9hXi2kBzJksezXaoMK/92/uKgjPy6qKDJnA=",
+    "hash": "sha256-qVO3EsuXg4ymCwSFSK0x1ciKrC90goVAovWdeLiss28=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.v8shbuty47.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Forms.uyuitmimef.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -43,7 +43,7 @@
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "System.Text.RegularExpressions.wasm",
       "System.7mkjnfwul0.wasm": "System.wasm",
       "System.Private.CoreLib.0za42iqynw.wasm": "System.Private.CoreLib.wasm",
-      "DeathwatchMobile.9d1cyjfvwl.wasm": "DeathwatchMobile.wasm",
+      "DeathwatchMobile.unqwohs21u.wasm": "DeathwatchMobile.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.xidrk0eo52.js": "dotnet.native.js",
       "dotnet.native.y68cfu4kuf.wasm": "dotnet.native.wasm",
@@ -109,7 +109,7 @@
       "System.Text.Json.xhntus0voo.wasm": "sha256-y1WOi3peQCDR6bfP/7SOLF6B9h5vLVaQCpG78EYUf4g=",
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "sha256-ZQejR0x7+S2JJA2Z1IkLWqWXukLRjL/c/zguib2fpHo=",
       "System.7mkjnfwul0.wasm": "sha256-H4K9w0OHWwZCaMDfVwQjW0dSqnnS/iuCkysBB+Q2c3A=",
-      "DeathwatchMobile.9d1cyjfvwl.wasm": "sha256-EzBGjZHGvjCWd5YoLhLrsba3X1hO8HiqeX/iPTfKwt4="
+      "DeathwatchMobile.unqwohs21u.wasm": "sha256-BnXR5CioOh/RkK5FfihU6EdJ1bncsy3NNHkGBk5p+XY="
     }
   },
   "cacheBootResources": true,
