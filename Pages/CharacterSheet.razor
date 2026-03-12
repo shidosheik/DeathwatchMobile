@@ -170,6 +170,22 @@ else
                 </div>
             </div>
 
+            <div class="card p-3 mt-3">
+                <h5 class="mb-3">Hit Location</h5>
+
+                <button class="btn btn-dark"
+                        @onclick="RollHitLocation">
+                    🎯 Roll Hit Location
+                </button>
+
+                @if (!string.IsNullOrEmpty(_hitLocationResult))
+                {
+                    <div class="alert alert-info mt-3 mb-0">
+                        @_hitLocationResult
+                    </div>
+                }
+            </div>
+
             <div class="col-12 col-lg-6">
                 <div class="card p-3 h-100">
                     <h5>Abilities & Notes</h5>
@@ -188,6 +204,15 @@ else
     [Parameter] public string Id { get; set; } = "";
     private Character? _character;
 
+    Random _rng = new();
+
+    // Hit location initialization
+    string _hitLocationResult = "";
+    int? _lastHitRoll;
+    string _lastHitLocation = "";
+    int _lastArmorValue = 0;
+
+    string _rollResult = "";
     protected override async Task OnInitializedAsync()
     {
         _character = await Store.GetByIdAsync(Id) ?? new Character { Id = Id };
@@ -237,9 +262,6 @@ else
         <div class="dw-sheet-text">@DisplayOrFallback(value, "—")</div>
     </div>;
 
-    Random _rng = new();
-
-    string _rollResult = "";
 
     void RollStat(string stat, int target)
     {
@@ -272,4 +294,61 @@ else
             _rollResult = $"{s.Name} FAIL: {roll} > {target}";
         }
     }
+
+    void RollHitLocation()
+    {
+        if (_character is null)
+            return;
+
+        int attackRoll = _rng.Next(1, 101);
+
+        int reversed = ReverseD100(attackRoll);
+        string location = GetHitLocation(reversed);
+        int armor = GetArmorForLocation(location);
+
+        _lastHitRoll = attackRoll;
+        _lastHitLocation = location;
+        _lastArmorValue = armor;
+
+        _hitLocationResult = $"Roll: {attackRoll:00} → Hit Location: {location} → Armor: {armor}";
+    }
+
+    int ReverseD100(int value)
+    {
+        if (value == 100)
+            return 100;
+
+        int tens = value / 10;
+        int ones = value % 10;
+
+        return (ones * 10) + tens;
+    }
+
+    string GetHitLocation(int reversedRoll)
+    {
+        if (reversedRoll >= 1 && reversedRoll <= 10)
+            return "Head";
+        if (reversedRoll >= 11 && reversedRoll <= 20)
+            return "Right Arm";
+        if (reversedRoll >= 21 && reversedRoll <= 30)
+            return "Left Arm";
+        if (reversedRoll >= 31 && reversedRoll <= 70)
+            return "Body";
+        if (reversedRoll >= 71 && reversedRoll <= 85)
+            return "Right Leg";
+
+        return "Left Leg";
+    }
+
+    int GetArmorForLocation(string location) => location switch
+    {
+        "Head" => _character?.ArmorHead ?? 0,
+        "Right Arm" => _character?.ArmorRightArm ?? 0,
+        "Left Arm" => _character?.ArmorLeftArm ?? 0,
+        "Body" => _character?.ArmorBody ?? 0,
+        "Right Leg" => _character?.ArmorRightLeg ?? 0,
+        "Left Leg" => _character?.ArmorLeftLeg ?? 0,
+        _ => 0
+    };
+
 }
