@@ -16,4 +16,11 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="DeathwatchMobile.Tests\**\*.cs" />
+    <Content Remove="DeathwatchMobile.Tests\**" />
+    <EmbeddedResource Remove="DeathwatchMobile.Tests\**" />
+    <None Remove="DeathwatchMobile.Tests\**" />
+  </ItemGroup>
+
 </Project>
