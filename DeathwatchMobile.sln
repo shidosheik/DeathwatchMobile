@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeathwatchMobile", "DeathwatchMobile.csproj", "{C0A60D66-087F-217D-35E3-426A1446C19C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeathwatchMobile.Tests", "..\DeathwatchMobile.Tests\DeathwatchMobile.Tests.csproj", "{809C3846-054A-493A-B449-77CD6935FF73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeathwatchMobile.Tests", "DeathwatchMobile.Tests\DeathwatchMobile.Tests.csproj", "{809C3846-054A-493A-B449-77CD6935FF73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
