@@ -339,27 +339,6 @@ else
                         </div>
                     </div>
 
-                    @if (SelectedLibraryTalents.Any())
-                    {
-                        <div class="mb-3">
-                            <label class="form-label">Talents Added from Library</label>
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach (var talentName in SelectedLibraryTalents)
-                                {
-                                    <span class="badge bg-secondary d-inline-flex align-items-center gap-1">
-                                        @talentName
-                                        <button type="button"
-                                                class="btn-close btn-close-white btn-sm"
-                                                style="font-size: .6rem;"
-                                                aria-label="Remove"
-                                                @onclick="() => RemoveTalentFromNotes(talentName)">
-                                        </button>
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                    }
-
                     <div class="mb-3">
                         <label class="form-label">Solo Mode Ability</label>
                         <textarea class="form-control" rows="3" @bind="_character.SoloModeAbility"></textarea>
