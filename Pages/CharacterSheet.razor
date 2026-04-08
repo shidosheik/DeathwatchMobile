@@ -1,6 +1,7 @@
 @page "/characters/{Id}/sheet"
 @using DeathwatchMobile.Models
 @inject DeathwatchMobile.Services.CharacterStore Store
+@inject DeathwatchMobile.Services.CharacterSheetService CharacterSheetService
 @inject NavigationManager Nav
 
 <PageTitle>Character Sheet</PageTitle>
@@ -265,90 +266,21 @@ else
 
     void RollStat(string stat, int target)
     {
-        int roll = _rng.Next(1, 101);
-
-        if (roll <= target)
-        {
-            _rollResult = $"{stat} SUCCESS: {roll} ≤ {target}";
-        }
-        else
-        {
-            _rollResult = $"{stat} FAIL: {roll} > {target}";
-        }
+        _rollResult = CharacterSheetService.RollStat(stat, target, _rng);
     }
 
     void RollSkill(Skill s)
     {
-        if (_character is null)
-            return;
-
-        int target = _character.SkillTarget(s);
-        int roll = _rng.Next(1, 101);
-
-        if (roll <= target)
-        {
-            _rollResult = $"{s.Name} SUCCESS: {roll} ≤ {target}";
-        }
-        else
-        {
-            _rollResult = $"{s.Name} FAIL: {roll} > {target}";
-        }
+        _rollResult = CharacterSheetService.RollSkill(_character, s, _rng);
     }
 
     void RollHitLocation()
     {
-        if (_character is null)
-            return;
-
-        int attackRoll = _rng.Next(1, 101);
-
-        int reversed = ReverseD100(attackRoll);
-        string location = GetHitLocation(reversed);
-        int armor = GetArmorForLocation(location);
-
-        _lastHitRoll = attackRoll;
-        _lastHitLocation = location;
-        _lastArmorValue = armor;
-
-        _hitLocationResult = $"Roll: {attackRoll:00} → Hit Location: {location} → Armor: {armor}";
+        var result = CharacterSheetService.RollHitLocation(_character, _rng);
+        _lastHitRoll = result.AttackRoll;
+        _lastHitLocation = result.Location;
+        _lastArmorValue = result.ArmorValue;
+        _hitLocationResult = result.Message;
     }
-
-    int ReverseD100(int value)
-    {
-        if (value == 100)
-            return 100;
-
-        int tens = value / 10;
-        int ones = value % 10;
-
-        return (ones * 10) + tens;
-    }
-
-    string GetHitLocation(int reversedRoll)
-    {
-        if (reversedRoll >= 1 && reversedRoll <= 10)
-            return "Head";
-        if (reversedRoll >= 11 && reversedRoll <= 20)
-            return "Right Arm";
-        if (reversedRoll >= 21 && reversedRoll <= 30)
-            return "Left Arm";
-        if (reversedRoll >= 31 && reversedRoll <= 70)
-            return "Body";
-        if (reversedRoll >= 71 && reversedRoll <= 85)
-            return "Right Leg";
-
-        return "Left Leg";
-    }
-
-    int GetArmorForLocation(string location) => location switch
-    {
-        "Head" => _character?.ArmorHead ?? 0,
-        "Right Arm" => _character?.ArmorRightArm ?? 0,
-        "Left Arm" => _character?.ArmorLeftArm ?? 0,
-        "Body" => _character?.ArmorBody ?? 0,
-        "Right Leg" => _character?.ArmorRightLeg ?? 0,
-        "Left Leg" => _character?.ArmorLeftLeg ?? 0,
-        _ => 0
-    };
 
 }
