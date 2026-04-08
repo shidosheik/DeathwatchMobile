@@ -290,5 +290,22 @@ namespace DeathwatchMobile.Services
                 }
             };
         }
+
+        public IEnumerable<TalentDefinition> FilterTalents(IEnumerable<TalentDefinition> talents, string searchText)
+        {
+            return talents.Where(t =>
+                string.IsNullOrWhiteSpace(searchText) ||
+                t.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                t.Prerequisites.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                t.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public string GetPreview(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return string.Empty;
+
+            return text.Length <= 140 ? text : text[..140] + "...";
+        }
     }
 }

@@ -1,6 +1,7 @@
 @page "/characters/{Id}"
 @using DeathwatchMobile.Models
 @inject DeathwatchMobile.Services.CharacterStore Store
+@inject DeathwatchMobile.Services.CharacterSkillService CharacterSkillService
 @inject NavigationManager Nav
 
 <PageTitle>Edit Character</PageTitle>
@@ -193,7 +194,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var s in FilteredSkills())
+                        @foreach (var s in CharacterSkillService.FilterSkills(_character, _skillSearch, _skillGoverning, _skillSort, _trainedOnly))
                         {
                             <tr>
                                 <td>
@@ -468,39 +469,6 @@ else
     private string _skillGoverning = "";
     private string _skillSort = "name";
     private bool _trainedOnly = false;
-
-    private IEnumerable<Skill> FilteredSkills()
-    {
-        if (_character?.Skills is null) return Enumerable.Empty<Skill>();
-
-        IEnumerable<Skill> q = _character.Skills;
-
-        if (!string.IsNullOrWhiteSpace(_skillSearch))
-        {
-            var search = _skillSearch.Trim();
-            q = q.Where(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (!string.IsNullOrWhiteSpace(_skillGoverning))
-        {
-            q = q.Where(x => x.Governing == _skillGoverning);
-        }
-
-        if (_trainedOnly)
-        {
-            q = q.Where(x => x.Training != SkillTraining.Untrained);
-        }
-
-        q = _skillSort switch
-        {
-            "target" => q.OrderByDescending(x => _character!.SkillTarget(x)).ThenBy(x => x.Name),
-            "governing" => q.OrderBy(x => x.Governing).ThenBy(x => x.Name),
-            "training" => q.OrderByDescending(x => x.Training).ThenBy(x => x.Name),
-            _ => q.OrderBy(x => x.Name)
-        };
-
-        return q;
-    }
 
     private void ResetSkillFilters()
     {

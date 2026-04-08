@@ -2,6 +2,7 @@
 
 @using DeathwatchMobile.Models
 @using DeathwatchMobile.Services
+@inject TalentLibraryService TalentLibraryService
 
 <PageTitle>Talent Library</PageTitle>
 
@@ -35,7 +36,7 @@ else
                         }
 
                         <div class="mb-2">
-                            @GetPreview(talent.Description)
+                            @TalentLibraryService.GetPreview(talent.Description)
                         </div>
 
                         <button class="btn btn-sm btn-outline-primary"
@@ -62,15 +63,11 @@ else
     private HashSet<string> _expanded = new();
 
     private IEnumerable<TalentDefinition> _filteredTalents =>
-        _talents.Where(t =>
-            string.IsNullOrWhiteSpace(_searchText) ||
-            t.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-            t.Prerequisites.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-            t.Description.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+        TalentLibraryService.FilterTalents(_talents, _searchText);
 
     protected override void OnInitialized()
     {
-        _talents = new TalentLibraryService().GetTalents();
+        _talents = TalentLibraryService.GetTalents();
     }
 
     private void ToggleExpanded(string id)
@@ -81,11 +78,4 @@ else
 
     private bool IsExpanded(string id) => _expanded.Contains(id);
 
-    private string GetPreview(string text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return string.Empty;
-
-        return text.Length <= 140 ? text : text[..140] + "...";
-    }
 }

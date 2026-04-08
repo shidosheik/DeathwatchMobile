@@ -1,4 +1,6 @@
 @page "/skills"
+@using DeathwatchMobile.Models
+@inject DeathwatchMobile.Services.SkillLibraryService SkillLibraryService
 
 <PageTitle>Skills Library</PageTitle>
 
@@ -11,13 +13,14 @@
                 <div class="col-12">
                     <InputText class="form-control"
                                placeholder="Search skills..."
-                               @bind-Value="_searchText" />
+                               @bind-Value="_searchText"
+                               @bind-Value:event="oninput" />
                 </div>
 
                 <div class="col-12">
                     <select class="form-select" @bind="_selectedCategory">
                         <option value="">All Categories</option>
-                        @foreach (var category in Categories)
+                        @foreach (var category in _categories)
                         {
                             <option value="@category">@category</option>
                         }
@@ -27,7 +30,7 @@
         </div>
     </div>
 
-    @if (FilteredSkills.Count == 0)
+    @if (_filteredSkills.Count == 0)
     {
         <div class="alert alert-secondary">
             No skills found.
@@ -36,7 +39,7 @@
     else
     {
         <div class="d-grid gap-2">
-            @foreach (var skill in FilteredSkills)
+            @foreach (var skill in _filteredSkills)
             {
                 <div class="card shadow-sm skill-card">
                     <div class="card-body">
@@ -79,118 +82,8 @@
     private string _searchText = "";
     private string _selectedCategory = "";
     private HashSet<string> _expanded = new();
-
-    private List<SkillEntry> _skills = new()
-    {
-        new SkillEntry
-        {
-            Name = "Awareness",
-            Characteristic = "Perception",
-            Category = "General",
-            Summary = "Used to notice threats, clues, hidden movement, and important details.",
-            Description = "Use this when a character is actively or passively trying to detect something in the environment.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Athletics",
-            Characteristic = "Strength",
-            Category = "Physical",
-            Summary = "Covers climbing, jumping, swimming, and physical exertion.",
-            Description = "Useful for movement challenges, rough terrain, and feats of physical effort.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Charm",
-            Characteristic = "Fellowship",
-            Category = "Interaction",
-            Summary = "Used to persuade, reassure, and build rapport.",
-            Description = "Best for positive social influence rather than threats or deception.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Command",
-            Characteristic = "Fellowship",
-            Category = "Interaction",
-            Summary = "Used to issue orders and assert authority.",
-            Description = "Useful for battlefield control, leadership moments, and directing NPCs.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Dodge",
-            Characteristic = "Agility",
-            Category = "Combat",
-            Summary = "Used to avoid attacks and hazards.",
-            Description = "A core defensive skill during combat and dangerous action scenes.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Forbidden Lore (Xenos)",
-            Characteristic = "Intelligence",
-            Category = "Knowledge",
-            Summary = "Represents specialized knowledge of alien species and threats.",
-            Description = "Useful for identifying xenos, recalling doctrine, and understanding alien dangers.",
-            IsTrainedOnly = true
-        },
-        new SkillEntry
-        {
-            Name = "Medicae",
-            Characteristic = "Intelligence",
-            Category = "Support",
-            Summary = "Used for diagnosis, treatment, and battlefield medicine.",
-            Description = "Useful for stabilizing allies and evaluating injuries or biological conditions.",
-            IsTrainedOnly = true
-        },
-        new SkillEntry
-        {
-            Name = "Scholastic Lore",
-            Characteristic = "Intelligence",
-            Category = "Knowledge",
-            Summary = "Formal education in an academic field.",
-            Description = "Represents structured learned knowledge rather than street knowledge or rumor.",
-            IsTrainedOnly = true
-        },
-        new SkillEntry
-        {
-            Name = "Scrutiny",
-            Characteristic = "Perception",
-            Category = "Interaction",
-            Summary = "Used to read motives, lies, and suspicious behavior.",
-            Description = "Helpful when assessing truthfulness, hidden intent, or subtle emotional tells.",
-            IsTrainedOnly = false
-        },
-        new SkillEntry
-        {
-            Name = "Tech-Use",
-            Characteristic = "Intelligence",
-            Category = "Technical",
-            Summary = "Used to operate, repair, bypass, or manipulate machinery and systems.",
-            Description = "A core technical skill for interacting with advanced equipment and devices.",
-            IsTrainedOnly = true
-        }
-    };
-
-    private List<string> Categories =>
-        _skills.Select(x => x.Category)
-               .Distinct()
-               .OrderBy(x => x)
-               .ToList();
-
-    private List<SkillEntry> FilteredSkills =>
-        _skills
-            .Where(x =>
-                (string.IsNullOrWhiteSpace(_searchText) ||
-                 x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-                 x.Summary.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-                 x.Description.Contains(_searchText, StringComparison.OrdinalIgnoreCase)) &&
-                (string.IsNullOrWhiteSpace(_selectedCategory) ||
-                 x.Category == _selectedCategory))
-            .OrderBy(x => x.Name)
-            .ToList();
+    private IReadOnlyList<string> _categories => SkillLibraryService.GetCategories();
+    private IReadOnlyList<SkillLibraryEntry> _filteredSkills => SkillLibraryService.FilterSkills(_searchText, _selectedCategory);
 
     private void ToggleExpanded(string name)
     {
@@ -200,13 +93,4 @@
 
     private bool IsExpanded(string name) => _expanded.Contains(name);
 
-    public class SkillEntry
-    {
-        public string Name { get; set; } = "";
-        public string Characteristic { get; set; } = "";
-        public string Category { get; set; } = "";
-        public string Summary { get; set; } = "";
-        public string Description { get; set; } = "";
-        public bool IsTrainedOnly { get; set; }
-    }
 }
