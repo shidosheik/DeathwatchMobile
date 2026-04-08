@@ -247,6 +247,19 @@ code {
     white-space: pre-wrap;
 }
 
+.dw-skills-table {
+    min-width: 760px;
+}
+
+.dw-skills-table th:first-child,
+.dw-skills-table td:first-child {
+    min-width: 240px;
+}
+
+.dw-skills-table-wrap {
+    -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 576px) {
     .dw-sheet-name {
         font-size: 1.35rem;
