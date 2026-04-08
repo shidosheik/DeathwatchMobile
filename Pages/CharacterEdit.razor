@@ -2,6 +2,7 @@
 @using DeathwatchMobile.Models
 @inject DeathwatchMobile.Services.CharacterStore Store
 @inject DeathwatchMobile.Services.CharacterSkillService CharacterSkillService
+@inject DeathwatchMobile.Services.TalentLibraryService TalentLibraryService
 @inject NavigationManager Nav
 
 <PageTitle>Edit Character</PageTitle>
@@ -293,8 +294,50 @@ else
 
                     <div class="mb-3">
                         <label class="form-label">Talents & Traits</label>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-md-5">
+                                <input class="form-control form-control-sm"
+                                       placeholder="Search talent library..."
+                                       @bind="_talentSearch"
+                                       @bind:event="oninput" />
+                            </div>
+                            <div class="col-9 col-md-5">
+                                <select class="form-select form-select-sm" @bind="_selectedTalentId">
+                                    <option value="">Select a talent...</option>
+                                    @foreach (var talent in FilteredTalentLibrary)
+                                    {
+                                        <option value="@talent.Id">@talent.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-3 col-md-2 d-grid">
+                                <button class="btn btn-sm btn-outline-primary" @onclick="AddSelectedTalent">Add</button>
+                            </div>
+                        </div>
                         <textarea class="form-control" rows="4" @bind="_character.TalentsAndTraits"></textarea>
+                        <div class="form-text">Add entries from the talent library, then edit text freely if needed.</div>
                     </div>
+
+                    @if (SelectedLibraryTalents.Any())
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Talents Added from Library</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var talentName in SelectedLibraryTalents)
+                                {
+                                    <span class="badge bg-secondary d-inline-flex align-items-center gap-1">
+                                        @talentName
+                                        <button type="button"
+                                                class="btn-close btn-close-white btn-sm"
+                                                style="font-size: .6rem;"
+                                                aria-label="Remove"
+                                                @onclick="() => RemoveTalentFromNotes(talentName)">
+                                        </button>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
 
                     <div class="mb-3">
                         <label class="form-label">Solo Mode Ability</label>
@@ -394,11 +437,24 @@ else
     [Parameter] public string Id { get; set; } = "";
     private Character? _character;
     private string _saveMessage = "";
+    private List<TalentDefinition> _talentLibrary = new();
+    private string _talentSearch = "";
+    private string _selectedTalentId = "";
+
+    private IEnumerable<TalentDefinition> FilteredTalentLibrary =>
+        TalentLibraryService.FilterTalents(_talentLibrary, _talentSearch);
+
+    private IEnumerable<string> SelectedLibraryTalents =>
+        _talentLibrary
+            .Select(t => t.Name)
+            .Where(IsTalentListedOnSheet)
+            .OrderBy(x => x);
 
     protected override async Task OnInitializedAsync()
     {
         _character = await Store.GetByIdAsync(Id) ?? new Character { Id = Id };
         _character.Skills ??= new List<Skill>();
+        _talentLibrary = TalentLibraryService.GetTalents().OrderBy(t => t.Name).ToList();
     }
 
     private async Task Save()
@@ -476,6 +532,51 @@ else
         _skillGoverning = "";
         _skillSort = "name";
         _trainedOnly = false;
+    }
+
+    private void AddSelectedTalent()
+    {
+        if (_character is null || string.IsNullOrWhiteSpace(_selectedTalentId))
+        {
+            return;
+        }
+
+        var selected = _talentLibrary.FirstOrDefault(t => t.Id == _selectedTalentId);
+        if (selected is null || IsTalentListedOnSheet(selected.Name))
+        {
+            return;
+        }
+
+        _character.TalentsAndTraits = string.IsNullOrWhiteSpace(_character.TalentsAndTraits)
+            ? selected.Name
+            : $"{_character.TalentsAndTraits}{Environment.NewLine}{selected.Name}";
+    }
+
+    private void RemoveTalentFromNotes(string talentName)
+    {
+        if (_character is null || string.IsNullOrWhiteSpace(_character.TalentsAndTraits))
+        {
+            return;
+        }
+
+        var updatedLines = _character.TalentsAndTraits
+            .Split(Environment.NewLine, StringSplitOptions.None)
+            .Where(line => !string.Equals(line.Trim(), talentName, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        _character.TalentsAndTraits = string.Join(Environment.NewLine, updatedLines);
+    }
+
+    private bool IsTalentListedOnSheet(string talentName)
+    {
+        if (_character is null || string.IsNullOrWhiteSpace(_character.TalentsAndTraits))
+        {
+            return false;
+        }
+
+        return _character.TalentsAndTraits
+            .Split(Environment.NewLine, StringSplitOptions.None)
+            .Any(line => string.Equals(line.Trim(), talentName, StringComparison.OrdinalIgnoreCase));
     }
 
     private int _newXpAmount;
