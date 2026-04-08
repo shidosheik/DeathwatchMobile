@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "DeathwatchMobile",
   "resources": {
-    "hash": "sha256-ko2HGge09wWQ9dowKejJmB1sjV+0Cmt3wQ7KyVbp3us=",
+    "hash": "sha256-6WrEu2KL7mnyHIFKDwOk59Qi0w4c5FlwAggQUl7wXLg=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.v8shbuty47.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Forms.uyuitmimef.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -37,13 +37,13 @@
       "System.Private.Uri.6bmdxhl9zl.wasm": "System.Private.Uri.wasm",
       "System.Runtime.InteropServices.JavaScript.un6jcmgrxl.wasm": "System.Runtime.InteropServices.JavaScript.wasm",
       "System.Runtime.Serialization.Primitives.fdvunasi8x.wasm": "System.Runtime.Serialization.Primitives.wasm",
-      "System.Runtime.hntp3eix10.wasm": "System.Runtime.wasm",
+      "System.Runtime.gs5yj9612r.wasm": "System.Runtime.wasm",
       "System.Text.Encodings.Web.z5osepan0o.wasm": "System.Text.Encodings.Web.wasm",
       "System.Text.Json.my1tnifuyl.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.pjhal65ko1.wasm": "System.Text.RegularExpressions.wasm",
       "System.dqfxtvioy0.wasm": "System.wasm",
-      "System.Private.CoreLib.1p0uslir41.wasm": "System.Private.CoreLib.wasm",
-      "DeathwatchMobile.naaxh1vxh3.wasm": "DeathwatchMobile.wasm",
+      "System.Private.CoreLib.vmqrmxhfrm.wasm": "System.Private.CoreLib.wasm",
+      "DeathwatchMobile.ud2c8tpiqz.wasm": "DeathwatchMobile.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.l1ds2rhypd.js": "dotnet.native.js",
       "dotnet.native.etgrtk5jba.wasm": "dotnet.native.wasm",
@@ -68,7 +68,7 @@
     },
     "coreAssembly": {
       "System.Runtime.InteropServices.JavaScript.un6jcmgrxl.wasm": "sha256-hvMt1IDwhfTaPJfe1fJ80HJ5eAum8hxykr0I3aDRcoE=",
-      "System.Private.CoreLib.1p0uslir41.wasm": "sha256-BU/6ZTCW4e4kQKPSDneu0CflHxlW/1VfWtNbyefhe40="
+      "System.Private.CoreLib.vmqrmxhfrm.wasm": "sha256-l4mPCp3klMwRivUy5XvkxpB+rnYfv9gkLx2UiJGYwHY="
     },
     "assembly": {
       "Microsoft.AspNetCore.Components.v8shbuty47.wasm": "sha256-weMA1bBLbpj/p+0d41imvpKDxBtFFCzsZsWh1g4wXvg=",
@@ -104,12 +104,12 @@
       "System.ObjectModel.deqc2jud5x.wasm": "sha256-W2HDJ3ICXLHblcXtEBISIHEph6KqvK/IdTj4x2+qpy8=",
       "System.Private.Uri.6bmdxhl9zl.wasm": "sha256-zhhwpGn/e97y1F62Iyr40fqoWVcKlu2hrPZILSqw/G4=",
       "System.Runtime.Serialization.Primitives.fdvunasi8x.wasm": "sha256-reYfS5dk9tjAHmSMeZkL8XM+OumTuqS5uVW69bilKto=",
-      "System.Runtime.hntp3eix10.wasm": "sha256-o2K1iHUcLRr2kPdgd93JrPe1mzKYNOac83RPf9qmaFE=",
+      "System.Runtime.gs5yj9612r.wasm": "sha256-MFdavmcXK6/zriz7hZi5WeakSnwcxN08kmKugGaMzpA=",
       "System.Text.Encodings.Web.z5osepan0o.wasm": "sha256-qWRckNgJUXP/8BMc9tmHvES2SMAuHimXyFmWjbXrfM8=",
       "System.Text.Json.my1tnifuyl.wasm": "sha256-Lh7VVSQGz9gRi3tXZc7M6QSWW6xkvUFhQ0Qdddj7hL8=",
       "System.Text.RegularExpressions.pjhal65ko1.wasm": "sha256-VdTVx7BqfLgxpexvMTkSI3N233xrnZp5GxwrZM9G28k=",
       "System.dqfxtvioy0.wasm": "sha256-5QZAjy4n7513fYxCXSXTsAkUmRsLiZ8m621Ot4k7FB0=",
-      "DeathwatchMobile.naaxh1vxh3.wasm": "sha256-Xzfcn7IzEYhg9Gf+u5xww5FS08ZhZrafElDIqq+hMCc="
+      "DeathwatchMobile.ud2c8tpiqz.wasm": "sha256-7rw2XHh/BFq9frR0Dc8/VL0dkNDpVi2jYVWa2ILh7mI="
     }
   },
   "cacheBootResources": true,
